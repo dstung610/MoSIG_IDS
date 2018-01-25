@@ -27,33 +27,115 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 import java.net.*;
 import java.io.*;
 
 public class EchoServer {
+
+    private static class IntOperator {
+      static public final int s_Op_Plus = 0;
+      static public final int s_Op_Minus = 1;
+      static public final int s_Op_Multiply = 2;
+      static public final int s_Op_Devide = 3;
+      int operator;
+      int x, y;
+      public IntOperator(int iOperator, int iX, int iY)
+      {
+        operator = iOperator;
+        x = iX;
+        y = iY;
+      }
+      public String Calculate()
+      {
+        int ret = 0;
+        boolean isDivisionByZero = false;
+        switch (operator)  {
+          case s_Op_Plus:
+            ret = x + y;
+            break;
+          case s_Op_Plus:
+            ret = x + y;
+            break;
+          case s_Op_Plus:
+            ret = x + y;
+            break;
+          case s_Op_Plus:
+            isDivisionByZero = (y == 0);
+            if (!isDivisionByZero)
+              ret = x / y;
+            break;
+          default:
+            break;
+        }
+
+        if (isDivisionByZero)
+        {
+          return "Division By Zero";
+        }
+        else
+        {
+          return "" + ret;
+        }
+      }
+
+    }
+    static private IntOperator parseClientMessage(String m)
+    {
+      IntOperator ret;
+      int operator = 0;
+      if (m.containt("plus"))
+      {
+        operator = InitOperator.s_Op_Plus;
+      }
+      else if (m.containt("minus"))
+      {
+        operator = InitOperator.s_Op_Minus;
+      }
+      else if (m.containt("multiply"))
+      {
+        operator = InitOperator.s_Op_Multiply;
+      }
+      else if (m.containt("divide"))
+      {
+        operator = InitOperator.s_Op_Devide;
+      }
+      else
+      {
+
+      }
+
+      m = m.substring(m.indexOf(" ") + 1);
+      String sX = m.substring(0, m.indexOf(" "));
+      String sY = m.substring(m.indexOf(" "));
+      ret = new IntOperator(operator, Integer.parseInt(sX), Integer.parseInt(sY));
+    }
     public static void main(String[] args) throws IOException {
-        
+
         if (args.length != 1) {
             System.err.println("Usage: java EchoServer <port number>");
             System.exit(1);
         }
-        
+
         int portNumber = Integer.parseInt(args[0]);
-        
+        System.out.println("Im starting...");
         try (
+
             ServerSocket serverSocket =
                 new ServerSocket(Integer.parseInt(args[0]));
-            Socket clientSocket = serverSocket.accept();     
+            Socket clientSocket = serverSocket.accept();
             PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true);                   
+                new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         ) {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 out.println(inputLine);
+                IntOperator exp = parseClientMessage(inputLine);
+                String outputLine = "result " + exp.Calculate();
+                out.println(outputLine);
             }
             System.out.println("I'm ending...");
         } catch (IOException e) {
