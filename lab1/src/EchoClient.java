@@ -27,17 +27,44 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
 
 public class EchoClient {
+    static HashMap<String, Integer> optionMap = new HashMap<>();
+    static {
+        optionMap.put("Echo", 1);
+        optionMap.put("Calculator", 2);
+    }
+
+    public static void printMenu() {
+        System.out.println("Get the following function:");
+        System.out.println("\tGo to simple Echo: Enter 1");
+        System.out.println("\tGo to simple calculator: Enter 2");
+    }
+
+    public static boolean isOptionValid(int option){
+        boolean res = false;
+
+        return res;
+    }
+
+
+    private static String getOptionString(int option) {
+        String optionString = "";
+
+//        for ()
+        return optionString;
+    }
+
     public static void main(String[] args) throws IOException {
-        
+
         if (args.length != 2) {
             System.err.println(
-                "Usage: java EchoClient <host name> <port number>");
+                    "Usage: java EchoClient <host name> <port number>");
             System.exit(1);
         }
 
@@ -45,28 +72,39 @@ public class EchoClient {
         int portNumber = Integer.parseInt(args[1]);
 
         try (
-            Socket echoSocket = new Socket(hostName, portNumber);
-            PrintWriter out =
-                new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader in =
-                new BufferedReader(
-                    new InputStreamReader(echoSocket.getInputStream()));
-            BufferedReader stdIn =
-                new BufferedReader(
-                    new InputStreamReader(System.in))
+                Socket echoSocket = new Socket(hostName, portNumber);
+                PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
         ) {
             String userInput;
+            int option = 0;
+            String optionString = "";
+            while(!isOptionValid(option)){
+                printMenu();
+                userInput = stdIn.readLine();
+                option = Integer.parseInt(userInput);
+                optionString = getOptionString(option);
+            }
+
             while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
+                switch (optionString) {
+                    case "ECHO":
+                        out.println(userInput);
+
+                        break;
+                    case "CALCULATOR":
+                }
                 System.out.println("echo: " + in.readLine());
+
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                hostName);
+            System.err.println("Couldn't get I/O for the connection to " + hostName);
             System.exit(1);
-        } 
+        }
     }
+
 }
