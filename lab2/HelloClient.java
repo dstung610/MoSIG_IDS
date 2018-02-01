@@ -15,7 +15,7 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
 
 	try {
 	  if (args.length < 1) {
-	   System.out.println("Usage: java HelloClient <rmiregistry host>");
+	   System.out.println("Usage: java HelloClient <rmiregistry host> <numberOfCalls>");
 	   return;
    }
 
