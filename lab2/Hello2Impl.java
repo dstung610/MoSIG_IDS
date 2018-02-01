@@ -14,6 +14,11 @@ public  class Hello2Impl implements Hello2 {
 			Registry registry = LocateRegistry.getRegistry();
 	  	Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
 			r.register(client);
+			int count = r.getNumberOfCalls(client);
+			if (count > 0 && count % 10 == 0)
+			{
+				message += "\nWARNING: " + count + " call(s)";
+			}
 		} catch (Exception e){
 				e.printStackTrace();
 		}
