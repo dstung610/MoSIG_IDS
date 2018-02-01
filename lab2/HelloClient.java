@@ -1,0 +1,69 @@
+import java.rmi.*;
+import java.io.Serializable;
+import java.rmi.registry.*;
+
+public class HelloClient implements Info_itf, Accounting_itf, Serializable
+{
+  HelloClient instance = null;
+  private static int s_IDcount = 0;
+  private String m_sName;
+  public HelloClient()
+  {
+
+  }
+  public static void main(String [] args) {
+
+	try {
+	  if (args.length < 1) {
+	   System.out.println("Usage: java HelloClient <rmiregistry host>");
+	   return;
+   }
+
+  	String host = args[0];
+    HelloClient client = HelloClient.getInstance();
+    client.m_sName = args[1];
+    int loop = Integer.parseInt(args[2]);
+
+  	// Get remote object reference
+  	Registry registry = LocateRegistry.getRegistry();
+  	Hello h = (Hello) registry.lookup("HelloService");
+    Hello2 h2 = (Hello2) registry.lookup("Hello2Service");
+    Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
+
+  	// Remote method invocation
+
+    //Method 1
+
+    String res = h.sayHello();
+    System.out.println(res);
+
+    //Method 2
+    res = h.sayHello(client);
+  	System.out.println(res);
+
+    res = h2.sayHello(client);
+  	System.out.println(res);
+
+    for (int i = 0; i < loop; i++)
+      res = h2.sayHello(client);
+
+    client.numberOfCalls(r.getNumberOfCalls(client));
+    } catch (Exception e)  {
+  		System.err.println("Error on client: " + e);
+  	}
+  }
+
+  public String getName()
+  {
+    return m_sName;
+  }
+  public static HelloClient getInstance()
+  {
+    return new HelloClient();
+  }
+
+  public void numberOfCalls(int number)
+  {
+    System.out.println("Number of calls: " + number);
+  }
+}
