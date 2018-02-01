@@ -34,29 +34,43 @@ import java.net.*;
 import java.util.HashMap;
 
 public class EchoClient {
-    static HashMap<String, Integer> optionMap = new HashMap<>();
+    private static HashMap<String, Integer> optionMap = new HashMap<>();
+
     static {
-        optionMap.put("Echo", 1);
-        optionMap.put("Calculator", 2);
+        optionMap.put("ECHO", 1);
+        optionMap.put("ADD", 2);
+        optionMap.put("SUB", 3);
+        optionMap.put("DIV", 4);
+        optionMap.put("MUL", 5);
     }
 
     public static void printMenu() {
-        System.out.println("Get the following function:");
+        System.out.println("Choose one of the following options:");
         System.out.println("\tGo to simple Echo: Enter 1");
-        System.out.println("\tGo to simple calculator: Enter 2");
+        System.out.println("\tAdding 2 numbers: Enter 2");
+        System.out.println("\tSubtract 2 numbers: Enter 3");
+        System.out.println("\tDivide 2 numbers: Enter 4");
+        System.out.println("\tMultiple 2 numbers: Enter 5");
+        System.out.println();
+        System.out.print("Your choice: ");
     }
 
-    public static boolean isOptionValid(int option){
+    public static boolean isOptionValid(int option) {
         boolean res = false;
-
+        for (HashMap.Entry<String, Integer> e : optionMap.entrySet()) {
+            int o = e.getValue();
+            if (o == option) res = true;
+        }
         return res;
     }
 
 
     private static String getOptionString(int option) {
         String optionString = "";
-
-//        for ()
+        for (HashMap.Entry<String, Integer> e : optionMap.entrySet()) {
+            int o = e.getValue();
+            if (o == option) optionString += e.getKey();
+        }
         return optionString;
     }
 
@@ -80,23 +94,35 @@ public class EchoClient {
             String userInput;
             int option = 0;
             String optionString = "";
-            while(!isOptionValid(option)){
+
+            while (!isOptionValid(option)) {
                 printMenu();
                 userInput = stdIn.readLine();
                 option = Integer.parseInt(userInput);
                 optionString = getOptionString(option);
             }
+            System.out.println("You choose " + optionString);
 
             while ((userInput = stdIn.readLine()) != null) {
                 switch (optionString) {
                     case "ECHO":
-                        out.println(userInput);
-
+                        out.println("ECHO " + userInput);
                         break;
-                    case "CALCULATOR":
+                    case "ADD":
+                        out.println("ADD " + userInput);
+                        break;
+                    case "SUB":
+                        out.println("SUB " + userInput);
+                        break;
+                    case "DIV":
+                        out.println("DIV " + userInput);
+                        break;
+                    case "MUL":
+                        out.println("MUL " + userInput);
+                        break;
                 }
-                System.out.println("echo: " + in.readLine());
 
+                System.out.println("echo: " + in.readLine());
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);

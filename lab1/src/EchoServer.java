@@ -34,83 +34,97 @@ import java.io.*;
 
 public class EchoServer {
 
-    private static class IntOperator {
-      static public final int s_Op_Plus = 0;
-      static public final int s_Op_Minus = 1;
-      static public final int s_Op_Multiply = 2;
-      static public final int s_Op_Devide = 3;
-      int operator;
-      int x, y;
-      public IntOperator(int iOperator, int iX, int iY)
-      {
-        operator = iOperator;
-        x = iX;
-        y = iY;
-      }
-      public String Calculate()
-      {
-        int ret = 0;
-        boolean isDivisionByZero = false;
-        switch (operator)  {
-          case s_Op_Plus:
-            ret = x + y;
-            break;
-          case s_Op_Plus:
-            ret = x + y;
-            break;
-          case s_Op_Plus:
-            ret = x + y;
-            break;
-          case s_Op_Plus:
-            isDivisionByZero = (y == 0);
-            if (!isDivisionByZero)
-              ret = x / y;
-            break;
-          default:
-            break;
+    private static class Action {
+        static public final int s_Op_Echo = 0;
+        static public final int s_Op_Plus = 1;
+        static public final int s_Op_Minus = 2;
+        static public final int s_Op_Multiply = 3;
+        static public final int s_Op_Divide = 4;
+        int operator;
+        int x, y;
+        String text;
+
+        public Action(int iOperator, int iX, int iY) {
+            operator = iOperator;
+            x = iX;
+            y = iY;
         }
 
-        if (isDivisionByZero)
-        {
-          return "Division By Zero";
+        public Action(int iOperator, String iText) {
+            operator = iOperator;
+            text = iText;
         }
-        else
-        {
-          return "" + ret;
+
+        public String process() {
+            int resArithmetic = 0;
+            String resString = "";
+            boolean isDivisionByZero = false;
+            switch (operator) {
+                case s_Op_Echo:
+                    resString = text;
+                    return resString;
+                case s_Op_Plus:
+                    resArithmetic = x + y;
+                    break;
+                case s_Op_Minus:
+                    resArithmetic = x - y;
+                    break;
+                case s_Op_Multiply:
+                    resArithmetic = x * y;
+                    break;
+                case s_Op_Divide:
+                    isDivisionByZero = (y == 0);
+                    if (!isDivisionByZero)
+                        resArithmetic = x / y;
+                    break;
+                default:
+                    break;
+
+            }
+
+            if (isDivisionByZero) {
+                return "Division By Zero";
+            } else {
+                return "" + resString + resArithmetic;
+            }
+
         }
-      }
 
     }
-    static private IntOperator parseClientMessage(String m)
-    {
-      IntOperator ret;
-      int operator = 0;
-      if (m.containt("plus"))
-      {
-        operator = InitOperator.s_Op_Plus;
-      }
-      else if (m.containt("minus"))
-      {
-        operator = InitOperator.s_Op_Minus;
-      }
-      else if (m.containt("multiply"))
-      {
-        operator = InitOperator.s_Op_Multiply;
-      }
-      else if (m.containt("divide"))
-      {
-        operator = InitOperator.s_Op_Devide;
-      }
-      else
-      {
 
-      }
+    static private Action parseClientMessage(String m) {
+        Action res;
+        int operator = 0;
+        String[] mSplit = m.split(" ");
+        String ms = mSplit[0];
+        System.out.println(ms);
+        if (ms.contains("ADD")) {
+            operator = Action.s_Op_Plus;
+        } else if (ms.contains("SUB")) {
+            operator = Action.s_Op_Minus;
+        } else if (ms.contains("MUL")) {
+            operator = Action.s_Op_Multiply;
+        } else if (ms.contains("DIV")) {
+            operator = Action.s_Op_Divide;
+        } else if (ms.contains("ECHO")) {
+            operator = Action.s_Op_Echo;
+        }
 
-      m = m.substring(m.indexOf(" ") + 1);
-      String sX = m.substring(0, m.indexOf(" "));
-      String sY = m.substring(m.indexOf(" "));
-      ret = new IntOperator(operator, Integer.parseInt(sX), Integer.parseInt(sY));
+        if (operator == 0) {
+            String text = mSplit[1];
+            res = new Action(operator, text);
+        } else if (operator == 1 || operator == 2 || operator == 3 || operator == 4) {
+            String sX = mSplit[1];
+            String sY = mSplit[2];
+            res = new Action(operator, Integer.parseInt(sX), Integer.parseInt(sY));
+        } else {
+            String text = mSplit[1];
+            res = new Action(operator, text);
+        }
+
+        return res;
     }
+
     public static void main(String[] args) throws IOException {
 
         if (args.length != 1) {
@@ -128,9 +142,8 @@ public class EchoServer {
         ) {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                out.println(inputLine);
-                IntOperator exp = parseClientMessage(inputLine);
-                String outputLine = "result " + exp.Calculate();
+                Action action = parseClientMessage(inputLine);
+                String outputLine = action.process();
                 out.println(outputLine);
             }
             System.out.println("I'm ending...");
