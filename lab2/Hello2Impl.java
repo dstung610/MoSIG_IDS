@@ -12,12 +12,12 @@ public  class Hello2Impl implements Hello2 {
 	public String sayHello(Info_itf client) throws RemoteException {
 		try {
 			Registry registry = LocateRegistry.getRegistry();
-	  	Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
+			Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
 			r.register(client);
 			int count = r.getNumberOfCalls(client);
 			if (count > 0 && count % 10 == 0)
 			{
-				message += "\nWARNING: " + count + " call(s)";
+				return client.getName() + " - method 2 : " + message + "\nWARNING: " + count + " call(s)";
 			}
 		} catch (Exception e){
 				e.printStackTrace();

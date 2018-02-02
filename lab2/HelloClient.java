@@ -43,10 +43,13 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
 
     res = h2.sayHello(client);
   	System.out.println(res);
+	System.out.println(loop);
 
     for (int i = 0; i < loop; i++)
+	{
       res = h2.sayHello(client);
-
+	  System.out.println(res);
+	}
     client.numberOfCalls(r.getNumberOfCalls(client));
     } catch (Exception e)  {
   		System.err.println("Error on client: " + e);
