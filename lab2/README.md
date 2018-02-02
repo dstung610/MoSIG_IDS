@@ -19,5 +19,5 @@ java HelloServer
 ~~~~
 + run client with command
 ~~~~
-java ClientServer <ClientName> <numberOfCalls>
+java ClientServer localhost <ClientName> <numberOfCalls>
 ~~~~
