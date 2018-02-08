@@ -1,14 +1,13 @@
 # Lab 2 Java RMI
 
-# Team Member
+## Team Member
 + DO Son Tung
 + HUYNH Danh Chieu Phu
 
-* Implemented Features
-+ Exercise 5 with both solutions
-+ Exercise 6 with all solutions
+## Implemented Features
++ Chat Application
 
-# How to run the program
+## How to run the program
 + compile with command
 ~~~~
 make
@@ -21,3 +20,25 @@ java HelloServer
 ~~~~
 java ClientServer localhost <ClientName> <numberOfCalls>
 ~~~~
+
+#### TODO LIST
++ Registry returns list of clients
++ Return specific client based on name
+#### Listing features
+
+Server side
++ Send broadcast to all client
++ Send message to specific client
++ Send server status
++ History as text files
++ Load history from text files
+
+
+Client side
++ join chat room
++ leave chat room
++ send message
++ send broadcast
+
+Bonus
++ GUI Implemented
