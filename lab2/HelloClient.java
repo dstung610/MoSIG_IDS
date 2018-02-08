@@ -33,7 +33,7 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
     	Hello h = (Hello) registry.lookup("HelloService");
       Hello2 h2 = (Hello2) registry.lookup("Hello2Service");
       Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-      ChatApp c = (ChatApp) registry.lookup("ChatingService");
+      ChatApp chatApp = (ChatApp) registry.lookup("ChatingService");
 
     	// Remote method invocation
 
@@ -65,24 +65,32 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
       ///if success - echo success message + send farewell
       String userInput;
       BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-
-      while ((userInput = stdIn.readLine()) != null)
+      int iRoomSize = chatApp.joinChatRoom(client);
+      if (iRoomSize > 0)
       {
-        if (userInput.contains(ChatApp.s_Command_Quit))
-        {
-          ///TODO -
-          ///send farewell
-          ///call ChatApp - leaveChatRoom
-          System.out.println("QUIT");
-        }
-        else
-        {
-          System.out.println("TEXT");
-          ///send userInput
-        }
-        System.out.println("echo: " + userInput);
-      }
+        System.out.println("NOTICE: Chat room joined");
+        System.out.println("There are " + iRoomSize + " people");
+        System.out.println("type : '@-QUIT' to leave the chat room");
 
+        while ((userInput = stdIn.readLine()) != null)
+        {
+          if (userInput.contains(ChatApp.s_Command_Quit))
+          {
+            ///TODO -
+            ///send farewell
+            ///call ChatApp - leaveChatRoom
+            chatApp.leaveChatRoom(client);
+            System.out.println("QUIT");
+          }
+          else
+          {
+            ///send userInput
+            chatApp.saySomething(client, userInput);
+            System.out.println("TEXT");
+          }
+          System.out.println("echo: " + userInput);
+        }
+      }
     } catch (Exception e)  {
   		System.err.println("Error on client: " + e);
   	}
