@@ -1,6 +1,7 @@
 import java.rmi.*;
 import java.io.Serializable;
 import java.rmi.registry.*;
+import java.io.*;
 
 public class HelloClient implements Info_itf, Accounting_itf, Serializable
 {
@@ -62,8 +63,7 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
       ///TODO -
       ///call ChatApp - joinChatRoom
       ///if success - echo success message + send farewell
-
-      BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+      String userInput;
       BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
       while ((userInput = stdIn.readLine()) != null)
@@ -73,12 +73,14 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
           ///TODO -
           ///send farewell
           ///call ChatApp - leaveChatRoom
+          System.out.println("QUIT");
         }
         else
         {
+          System.out.println("TEXT");
           ///send userInput
         }
-        System.out.println("echo: " + in.readLine());
+        System.out.println("echo: " + userInput);
       }
 
     } catch (Exception e)  {
