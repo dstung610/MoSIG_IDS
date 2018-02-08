@@ -29,4 +29,9 @@ public class ChatAppImpl implements ChatApp {
     public void saySomething(Info_itf client, String message) throws RemoteException {
 
     }
+
+    private void sendBroadcast(String message)
+    {
+      
+    }
 }

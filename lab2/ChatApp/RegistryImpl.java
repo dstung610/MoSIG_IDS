@@ -16,15 +16,19 @@ public class RegistryImpl implements Registry_itf {
     }
 
     public int register(Info_itf client) throws RemoteException {
-        boolean test = !(m_listClients.containsKey(client.getName()));
-        if (test) {
+        int resCode = s_iError_NoError;
+
+        boolean isFound = (m_listClients.containsKey(client.getName()));
+        if (!isFound) {
             m_listClients.put(client.getName(), 0);
             System.out.println(client.getName() + " registered");
         }
-        int count = m_listClients.get(client.getName());
-        count++;
-        m_listClients.put(client.getName(), count);
-        return s_iError_NoError;
+        else
+        {
+          resCode = s_iErrorSameID;
+        }
+
+        return resCode;
     }
 
     public int getNumberOfCalls(Info_itf client) throws RemoteException {
@@ -45,5 +49,14 @@ public class RegistryImpl implements Registry_itf {
     public String getErrorMessage(int iErrorCode)
     {
       return s_asErrorMessages[iErrorCode];
+    }
+
+    public HashMap<Info_itf> getListOfClients()throws RemoteException
+    {
+
+    }
+    public Info_itf getClient(String sClientName)throws RemoteException
+    {
+      
     }
 }
