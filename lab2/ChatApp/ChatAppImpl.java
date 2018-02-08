@@ -12,12 +12,14 @@ public class ChatAppImpl implements ChatApp {
 			{
 				Registry registry = LocateRegistry.getRegistry();
 				Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-				r.register(client);
+				int res = r.register(client);
+        if (res == Registry_itf.s_iError_NoError)
+          iRoomSize = r.getNumberOfClients();
 
 			} catch (Exception e){
 					e.printStackTrace();
 			}
-
+      return iRoomSize;
     }
 
     public int leaveChatRoom(Info_itf client) throws RemoteException {

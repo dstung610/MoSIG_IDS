@@ -24,6 +24,7 @@ public class RegistryImpl implements Registry_itf {
         int count = m_listClients.get(client.getName());
         count++;
         m_listClients.put(client.getName(), count);
+        return s_iError_NoError;
     }
 
     public int getNumberOfCalls(Info_itf client) throws RemoteException {
