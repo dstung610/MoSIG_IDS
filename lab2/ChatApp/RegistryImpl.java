@@ -4,13 +4,18 @@ import java.util.HashMap;
 
 public class RegistryImpl implements Registry_itf {
 
+    private static final String[] s_asErrorMessages = {
+      "",
+      "ERROR: Client ID is already registered"
+    };
+
     public HashMap<String, Integer> m_listClients;
 
     public RegistryImpl() {
         m_listClients = new HashMap<String, Integer>();
     }
 
-    public void register(Info_itf client) throws RemoteException {
+    public int register(Info_itf client) throws RemoteException {
         boolean test = !(m_listClients.containsKey(client.getName()));
         if (test) {
             m_listClients.put(client.getName(), 0);
@@ -31,4 +36,13 @@ public class RegistryImpl implements Registry_itf {
         return count;
     }
 
+    public int getNumberOfClients()throws RemoteException
+    {
+      return m_listClients.size();
+    }
+
+    public String getErrorMessage(int iErrorCode)
+    {
+      return s_asErrorMessages[iErrorCode];
+    }
 }

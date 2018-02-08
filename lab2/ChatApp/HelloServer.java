@@ -20,7 +20,7 @@ public class HelloServer {
 
 	    // Register the remote object in RMI registry with a given identifier
 	    Registry registry= LocateRegistry.getRegistry();
-		System.setProperty("java.rmi.server.hostname","127.0.0.1");
+		    // System.setProperty("java.rmi.server.hostname","127.0.0.1");
       registry.rebind("HelloService", h_stub);
       registry.rebind("Hello2Service", h2_stub);
       registry.rebind("RegistryService", r_stub);

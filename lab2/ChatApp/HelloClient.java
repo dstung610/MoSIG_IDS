@@ -63,15 +63,18 @@ public class HelloClient implements Info_itf, Accounting_itf, Serializable
       ///TODO -
       ///call ChatApp - joinChatRoom
       ///if success - echo success message + send farewell
-      String userInput;
-      BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+      System.out.println("Trying to join Chat room");
       int iRoomSize = chatApp.joinChatRoom(client);
+      System.out.println("Rooms size: " + iRoomSize);
       if (iRoomSize > 0)
       {
         System.out.println("NOTICE: Chat room joined");
         System.out.println("There are " + iRoomSize + " people");
         System.out.println("type : '@-QUIT' to leave the chat room");
 
+        String userInput;
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         while ((userInput = stdIn.readLine()) != null)
         {
           if (userInput.contains(ChatApp.s_Command_Quit))
