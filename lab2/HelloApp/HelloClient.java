@@ -5,111 +5,80 @@ import java.io.*;
 
 public class HelloClient implements Info_itf, Accounting_itf, Serializable
 {
-  HelloClient instance = null;
-  private static int s_IDcount = 0;
+    HelloClient instance = null;
+    private static int s_IDcount = 0;
 
-  private String m_sName;
+    private String m_sName;
 
 
-  public HelloClient()
-  {
+    public HelloClient()
+    {
 
-  }
-  public static void main(String [] args) {
+    }
 
-  	try {
-  	  if (args.length < 1) {
-  	   System.out.println("Usage: java HelloClient <rmiregistry host> <numberOfCalls>");
-  	   return;
-      }
+    public static void main(String[] args)
+    {
 
-    	String host = args[0];
-      HelloClient client = HelloClient.getInstance();
-      client.m_sName = args[1];
-      int loop = Integer.parseInt(args[2]);
-
-    	// Get remote object reference
-    	Registry registry = LocateRegistry.getRegistry();
-    	Hello h = (Hello) registry.lookup("HelloService");
-      Hello2 h2 = (Hello2) registry.lookup("Hello2Service");
-      Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-      ChatApp chatApp = (ChatApp) registry.lookup("ChatingService");
-
-    	// Remote method invocation
-
-      //Exercise 5
-      //Method 1
-
-      String res = h.sayHello();
-      System.out.println(res);
-
-      //Method 2
-      res = h.sayHello(client);
-    	System.out.println(res);
-
-      res = h2.sayHello(client);
-    	System.out.println(res);
-
-      //Exercise 6
-      for (int i = 0; i < loop; i++)
-  	  {
-        res = h2.sayHello(client);
-  	    System.out.println(res);
-  	  }
-      client.numberOfCalls(r.getNumberOfCalls(client));
-
-      //Exercise 7
-
-      ///TODO -
-      ///call ChatApp - joinChatRoom
-      ///if success - echo success message + send farewell
-
-      System.out.println("Trying to join Chat room");
-      int iRoomSize = chatApp.joinChatRoom(client);
-      System.out.println("Rooms size: " + iRoomSize);
-      if (iRoomSize > 0)
-      {
-        System.out.println("NOTICE: Chat room joined");
-        System.out.println("There are " + iRoomSize + " people");
-        System.out.println("type : '@-QUIT' to leave the chat room");
-
-        String userInput;
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        while ((userInput = stdIn.readLine()) != null)
+        try
         {
-          if (userInput.contains(ChatApp.s_Command_Quit))
-          {
-            ///TODO -
-            ///send farewell
-            ///call ChatApp - leaveChatRoom
-            chatApp.leaveChatRoom(client);
-            System.out.println("QUIT");
-          }
-          else
-          {
-            ///send userInput
-            chatApp.saySomething(client, userInput);
-            System.out.println("TEXT");
-          }
-          System.out.println("echo: " + userInput);
+            if (args.length < 1)
+            {
+                System.out.println("Usage: java HelloClient <rmiregistry host> <numberOfCalls>");
+                return;
+            }
+
+            String host = args[0];
+            HelloClient client = HelloClient.getInstance();
+            client.m_sName = args[1];
+            int loop = Integer.parseInt(args[2]);
+
+            // Get remote object reference
+            Registry registry = LocateRegistry.getRegistry();
+            Hello h = (Hello) registry.lookup("HelloService");
+            Hello2 h2 = (Hello2) registry.lookup("Hello2Service");
+            Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
+
+            // Remote method invocation
+
+            //Exercise 5
+            //Method 1
+
+            String res = h.sayHello();
+            System.out.println(res);
+
+            //Method 2
+            res = h.sayHello(client);
+            System.out.println(res);
+
+            res = h2.sayHello(client);
+            System.out.println(res);
+
+            //Exercise 6
+            for (int i = 0; i < loop; i++)
+            {
+                res = h2.sayHello(client);
+                System.out.println(res);
+            }
+            client.numberOfCalls(r.getNumberOfCalls(client));
+
+        } catch (Exception e)
+        {
+            System.err.println("Error on client: " + e);
         }
-      }
-    } catch (Exception e)  {
-  		System.err.println("Error on client: " + e);
-  	}
-  }
+    }
 
-  public String getName()
-  {
-    return m_sName;
-  }
-  public static HelloClient getInstance()
-  {
-    return new HelloClient();
-  }
+    public String getName()
+    {
+        return m_sName;
+    }
 
-  public void numberOfCalls(int number)
-  {
-    System.out.println("Number of calls: " + number);
-  }
+    public static HelloClient getInstance()
+    {
+        return new HelloClient();
+    }
+
+    public void numberOfCalls(int number)
+    {
+        System.out.println("Number of calls: " + number);
+    }
 }
