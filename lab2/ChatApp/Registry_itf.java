@@ -1,4 +1,5 @@
 import java.rmi.*;
+import java.util.List;
 
 public interface Registry_itf extends Remote
 {
@@ -11,6 +12,5 @@ public interface Registry_itf extends Remote
   public int getNumberOfClients()throws RemoteException;
 
   public String getErrorMessage(int iErrorCode)throws RemoteException;
-  public HashMap<Info_itf> getListOfClients()throws RemoteException;
-  public Info_itf getClient(String sClientName)throws RemoteException;
+  public List<String> getListOfClients()throws RemoteException;
 }

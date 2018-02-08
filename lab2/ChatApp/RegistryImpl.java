@@ -1,6 +1,8 @@
 
 import java.rmi.*;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class RegistryImpl implements Registry_itf {
 
@@ -51,12 +53,8 @@ public class RegistryImpl implements Registry_itf {
       return s_asErrorMessages[iErrorCode];
     }
 
-    public HashMap<Info_itf> getListOfClients()throws RemoteException
+    public List<String> getListOfClients()throws RemoteException
     {
-
-    }
-    public Info_itf getClient(String sClientName)throws RemoteException
-    {
-      
+		return new ArrayList<String>(m_listClients.keySet());
     }
 }
