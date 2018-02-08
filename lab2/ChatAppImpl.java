@@ -6,15 +6,16 @@ public class ChatAppImpl implements ChatApp {
     public ChatAppImpl() {
     }
 
-    public String joinChatRoom() throws RemoteException {
-        return "";
+    public int joinChatRoom(Info_itf client) throws RemoteException {
+
+        return 0;
     }
 
-    public String leaveChatRoom() throws RemoteException {
-        return "";
+    public int leaveChatRoom(Info_itf client) throws RemoteException {
+        return 0;
     }
 
-    public String saySomething(String s) throws RemoteException {
-        return "";
+    public void saySomething(Info_itf client, String message) throws RemoteException {
+
     }
 }
