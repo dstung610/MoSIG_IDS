@@ -43,18 +43,21 @@ public class ChatClient implements Info_itf
   
   public void PushMessage(String message)throws RemoteException
   {
+	  System.out.println("INFO: PushMessage" + message);
 	  m_qsMessageBuffer.addLast(message);
 	  m_iMessageCount++;
   }
   
   public String PullMessage()
   {
+	  System.out.println("INFO: PullMessage");
 	  m_iMessageCount = m_iMessageCount > 0 ? m_iMessageCount - 1 : 0;
 	  return m_qsMessageBuffer.pollFirst();
   }
   
   public int GetMessageCount()
   {
+	  System.out.println("INFO: GetMessageCount " + m_iMessageCount);
 	  return m_iMessageCount;
   }
   
@@ -94,9 +97,9 @@ public class ChatClient implements Info_itf
         System.out.println("There are " + iRoomSize + " people");
         System.out.println("type : '@-QUIT' to leave the chat room");
 
-        String userInput;
+        String userInput = "";
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        while ((userInput = stdIn.readLine()) != null || client.GetMessageCount() > 0)
+        while (client.GetMessageCount() > 0 || (userInput = stdIn.readLine()) != null )
         {
 			if (client.GetMessageCount() > 0)
 			{
@@ -113,7 +116,7 @@ public class ChatClient implements Info_itf
           else
           {
             ///send userInput
-            chatApp.saySomething(client.getName(), "", userInput);
+            chatApp.saySomething(client.getName(), "Conmeo", userInput);
             System.out.println("TEXT");
           }
           System.out.println("echo: " + userInput);
