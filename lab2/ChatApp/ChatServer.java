@@ -3,10 +3,13 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.rmi.registry.*;
 
-public class ChatServer {
+public class ChatServer
+{
 
-    public static void main(String[] args) {
-        try {
+    public static void main(String[] args)
+    {
+        try
+        {
             // Create a Hello remote object
             RegistryImpl r = new RegistryImpl();
             ChatAppImpl c = new ChatAppImpl();
@@ -21,7 +24,8 @@ public class ChatServer {
 
             System.out.println("Server ready");
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.err.println("Error on server :" + e);
             e.printStackTrace();
         }
