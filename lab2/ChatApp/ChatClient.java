@@ -80,9 +80,11 @@ public class ChatClient implements Info_itf, Runnable
 	}
   }
   
-  public static void main(String [] args) {
+  public static void main(String [] args) 
+  {
 
-  	try {
+  	try 
+	{
   	  if (args.length < 1) {
   	   System.out.println("Usage: java ChatClient <rmiregistry host> <client name>");
   	   return;
@@ -139,10 +141,15 @@ public class ChatClient implements Info_itf, Runnable
 				System.out.println("TEXT");
 			}
 			System.out.println("echo: " + userInput);
-        }
-      }
-    } catch (Exception e)  {
-  		System.err.println("Error on client: " + e);
-  	}
-  }
+        } 
+		
+	}
+	
+	}catch (Exception e)
+	{
+		System.err.println("Error on client: " + e);
+
+	}
+	
+	}
 }
