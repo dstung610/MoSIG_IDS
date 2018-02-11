@@ -6,12 +6,6 @@ import java.util.ArrayList;
 
 public class RegistryImpl implements Registry_itf
 {
-
-    private static final String[] s_asErrorMessages = {
-            "",
-            "ERROR: Client ID is already registered"
-    };
-
     public HashMap<String, Integer> m_listClients;
 
     public RegistryImpl()
@@ -35,6 +29,23 @@ public class RegistryImpl implements Registry_itf
 
         return resCode;
     }
+	
+	public int unregister(Info_itf client) throws RemoteException
+    {
+        int resCode = s_iError_NoError;
+
+        boolean isFound = (m_listClients.containsKey(client.getName()));
+        if (isFound)
+        {
+            m_listClients.remove(client.getName(), 0);
+            System.out.println(client.getName() + "unregistered");
+        } else
+        {
+            resCode = s_iErrorSameID;
+        }
+
+        return resCode;
+    }
 
     public int getNumberOfCalls(Info_itf client) throws RemoteException
     {
@@ -51,11 +62,6 @@ public class RegistryImpl implements Registry_itf
     public int getNumberOfClients() throws RemoteException
     {
         return m_listClients.size();
-    }
-
-    public String getErrorMessage(int iErrorCode)
-    {
-        return s_asErrorMessages[iErrorCode];
     }
 
     public List<String> getListOfClients() throws RemoteException

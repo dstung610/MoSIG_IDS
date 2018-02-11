@@ -8,5 +8,8 @@ public interface ChatApp extends Remote
 
     public int leaveChatRoom(Info_itf client) throws RemoteException;
 
-    public void saySomething(String scrName, String desName, String message) throws RemoteException;
+    public void saySomething(String scrName, String message) throws RemoteException;
+	
+    public String getErrorMessage(int iErrorCode) throws RemoteException;
+
 }
