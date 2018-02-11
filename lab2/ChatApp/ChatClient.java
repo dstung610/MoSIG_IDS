@@ -3,8 +3,9 @@ import java.rmi.server.*;
 import java.rmi.registry.*;
 import java.io.*;
 import java.util.LinkedList;
+import java.lang.Thread;
 
-public class ChatClient implements Info_itf
+public class ChatClient implements Info_itf, Runnable
 {
   ChatClient instance = null;
   private static int s_IDcount = 0;
@@ -43,22 +44,40 @@ public class ChatClient implements Info_itf
   
   public void PushMessage(String message)throws RemoteException
   {
-	  System.out.println("INFO: PushMessage" + message);
+	  // System.out.println("INFO: PushMessage" + message);
 	  m_qsMessageBuffer.addLast(message);
 	  m_iMessageCount++;
   }
   
   public String PullMessage()
   {
-	  System.out.println("INFO: PullMessage");
+	  // System.out.println("INFO: PullMessage");
 	  m_iMessageCount = m_iMessageCount > 0 ? m_iMessageCount - 1 : 0;
 	  return m_qsMessageBuffer.pollFirst();
   }
   
   public int GetMessageCount()
   {
-	  System.out.println("INFO: GetMessageCount " + m_iMessageCount);
+	  // System.out.println("INFO: GetMessageCount " + m_iMessageCount);
 	  return m_iMessageCount;
+  }
+  
+  public void run()
+  {
+	while (true)
+	{		
+		if (GetMessageCount() > 0)
+			System.out.println(PullMessage());
+		
+		try 
+		{		
+			Thread.sleep(300);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println(e);
+		}
+	}
   }
   
   public static void main(String [] args) {
@@ -99,27 +118,27 @@ public class ChatClient implements Info_itf
 
         String userInput = "";
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        while (client.GetMessageCount() > 0 || (userInput = stdIn.readLine()) != null )
+		
+		Thread threadPullServerMessage = new Thread(client);
+		threadPullServerMessage.start();
+		
+        while ((userInput = stdIn.readLine()) != null )
         {
-			if (client.GetMessageCount() > 0)
+			if (userInput.contains(ChatApp.s_Command_Quit))
 			{
-				System.out.println(client.PullMessage());
+				///TODO -
+				///send farewell
+				///call ChatApp - leaveChatRoom
+				chatApp.leaveChatRoom(client);
+				System.out.println("QUIT");
 			}
-          else if (userInput.contains(ChatApp.s_Command_Quit))
-          {
-            ///TODO -
-            ///send farewell
-            ///call ChatApp - leaveChatRoom
-            chatApp.leaveChatRoom(client);
-            System.out.println("QUIT");
-          }
-          else
-          {
-            ///send userInput
-            chatApp.saySomething(client.getName(), "Conmeo", userInput);
-            System.out.println("TEXT");
-          }
-          System.out.println("echo: " + userInput);
+			else
+			{
+				///send userInput
+				chatApp.saySomething(client.getName(), "Conmeo", userInput);
+				System.out.println("TEXT");
+			}
+			System.out.println("echo: " + userInput);
         }
       }
     } catch (Exception e)  {
