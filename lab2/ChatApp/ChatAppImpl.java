@@ -91,6 +91,24 @@ public class ChatAppImpl implements ChatApp
         return res;
     }
 	
+	public int disConnectChatRoom(String clientName) throws RemoteException
+    {
+		int res = ClientBase.s_iError_NoError;
+        try
+        {
+            res = getClientBase().unregister(clientName);
+			if (res == ClientBase.s_iError_NoError)
+			{
+				sendBroadcast(clientName + " has been disconnected!");
+				saveChatLog();
+			}
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return res;
+    }
+	
 	public String getErrorMessage(int iErrorCode)
     {
         return s_asErrorMessages[iErrorCode];
@@ -118,7 +136,7 @@ public class ChatAppImpl implements ChatApp
 					}
 					catch (Exception e)
 					{
-						leaveChatRoom(client);
+						disConnectChatRoom(clientName);
 					}
 				}
 			}

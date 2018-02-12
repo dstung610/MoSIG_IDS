@@ -38,7 +38,7 @@ public class ClientBaseImpl implements ClientBase
         if (isFound)
         {
             m_listClients.remove(clientName, 0);
-            System.out.println(clientName + "unregistered");
+            System.out.println(clientName + " unregistered");
         } else
         {
             resCode = s_iErrorSameID;

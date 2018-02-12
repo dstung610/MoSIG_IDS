@@ -57,11 +57,14 @@ public class ChatClient implements Info_itf, Runnable
 	  	m_iMessageCount += message.size();
   	}
 	
-  	public String PullMessage()
+  	public void PullMessage()
   	{
 	  	// System.out.println("INFO: PullMessage");
-	  	m_iMessageCount = m_iMessageCount > 0 ? m_iMessageCount - 1 : 0;
-	  	return m_qsMessageBuffer.pollFirst();
+	  	while(m_iMessageCount > 0)
+		{
+			System.out.println(m_qsMessageBuffer.pollFirst());
+			m_iMessageCount--;
+		}
   	}
   	
   	public int GetMessageCount()
@@ -75,8 +78,7 @@ public class ChatClient implements Info_itf, Runnable
 		while (true)
 		{		
 			if (GetMessageCount() > 0)
-				System.out.println(PullMessage());
-			
+				PullMessage();
 			try 
 			{		
 				Thread.sleep(300);
