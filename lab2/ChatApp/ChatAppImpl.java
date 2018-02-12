@@ -8,28 +8,63 @@ public class ChatAppImpl implements ChatApp
 	private static final String[] s_asErrorMessages = {
             "",
             "ERROR: Client ID is already registered",
-			"ERROR: Client ID is not found"
+			"ERROR: Client ID is not found",
+			"ERROR: Client ID is invalided",
     };
 	private static final String s_sChatLogFileName = "./ServerChat.log";
+	private static final String s_sServerName = "_SERVER_";
 	private LinkedList<String> m_qsChatLog;
+	private Registry m_registry = null;
+	private ClientBase m_clientBase = null;
 	
     public ChatAppImpl()
     {
+		m_qsChatLog = new LinkedList<String> ();
+		            
     }
+	
+	private Registry getRegistry()
+	{
+		try
+        {
+			if (m_registry == null)
+				m_registry = LocateRegistry.getRegistry();
+		} 
+		catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+		return m_registry;
+	}
+	private ClientBase getClientBase()
+	{
+		try
+		{
+			if (m_clientBase == null)
+				m_clientBase = (ClientBase) getRegistry().lookup("RegistryService");
+		} 
+		catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+		return m_clientBase;
+	}
 
     public int joinChatRoom(Info_itf client) throws RemoteException
     {
-        int res = Registry_itf.s_iError_NoError;
+        int res = ClientBase.s_iError_NoError;
         try
-        {
-            Registry registry = LocateRegistry.getRegistry();
-            Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-            res = r.register(client);
-            if (res == Registry_itf.s_iError_NoError)
+		{
+			if (client.getName().equals(s_sServerName))
 			{
-				sendBroadcast(client.getName() + " has joined the room!");
+				return ClientBase.s_iErrorInvalideID;
+			}
+            res = getClientBase().register(client.getName());
+            if (res == ClientBase.s_iError_NoError)
+			{
 				loadChatLog();
 				client.PushMessageList(m_qsChatLog);
+				sendBroadcast(client.getName() + " has joined the room!");
 			}
         } catch (Exception e)
         {
@@ -40,13 +75,11 @@ public class ChatAppImpl implements ChatApp
 
     public int leaveChatRoom(Info_itf client) throws RemoteException
     {
-		int res = Registry_itf.s_iError_NoError;
+		int res = ClientBase.s_iError_NoError;
         try
         {
-            Registry registry = LocateRegistry.getRegistry();
-            Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-            res = r.unregister(client);
-			if (res == Registry_itf.s_iError_NoError)
+            res = getClientBase().unregister(client.getName());
+			if (res == ClientBase.s_iError_NoError)
 			{
 				sendBroadcast(client.getName() + " has left the room!");
 				saveChatLog();
@@ -67,21 +100,31 @@ public class ChatAppImpl implements ChatApp
     {
         try
         {
-            Registry registry = LocateRegistry.getRegistry();
-			Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
-            List<String> clientList = r.getListOfClients();
+			message = scrName + ": " + message;
+			addToChatLog(message);
+            
+            List<String> clientList = getClientBase().getListOfClients();
             for (Iterator<String> i = clientList.iterator(); i.hasNext();) 
 			{
 				String clientName = i.next();
 				if (!clientName.equals(scrName))
 				{
-					Info_itf client = (Info_itf) registry.lookup(ChatClient.GenerateServiceName(clientName));
-					if (client != null)
-						client.PushMessage(scrName + ": " + message);
+					Info_itf client = null;
+					try 
+					{
+						client = (Info_itf) getRegistry().lookup(ChatClient.GenerateServiceName(clientName));
+						if (client != null)
+							client.PushMessage(message);
+					}
+					catch (Exception e)
+					{
+						leaveChatRoom(client);
+					}
 				}
 			}
 
-        } catch (Exception e)
+        }	
+		catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -91,7 +134,7 @@ public class ChatAppImpl implements ChatApp
     {
 		try
 		{
-			saySomething("", message);
+			saySomething(s_sServerName, message);
 		} 
 		catch (Exception e)
         {
@@ -126,9 +169,14 @@ public class ChatAppImpl implements ChatApp
 		{			
 			BufferedReader reader = new BufferedReader(new FileReader(s_sChatLogFileName));
 			String line = null;
+			LinkedList<String> slChatLog = new LinkedList<String>();
 			while ((line = reader.readLine()) != null) {
-				m_qsChatLog.add(line);
+				slChatLog.add(line);
 			}
+			
+			if (slChatLog.size() > m_qsChatLog.size())
+				m_qsChatLog = (LinkedList<String>) slChatLog.clone();
+			
 		}
 		catch (IOException e)
 		{

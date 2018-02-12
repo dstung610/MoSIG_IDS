@@ -52,7 +52,7 @@ public class ChatClient implements Info_itf, Runnable
   	
 	public void PushMessageList(LinkedList<String> message)throws RemoteException
   	{
-	  	// System.out.println("INFO: PushMessage" + message);
+	  	System.out.println("INFO: PushMessageLIST" + message.size());
 	  	m_qsMessageBuffer.addAll(message);
 	  	m_iMessageCount += message.size();
   	}
@@ -108,7 +108,7 @@ public class ChatClient implements Info_itf, Runnable
 					
 			registry.rebind(client.getServiceName(), client_stub);
 			
-			Registry_itf r = (Registry_itf) registry.lookup("RegistryService");
+			ClientBase r = (ClientBase) registry.lookup("RegistryService");
 			ChatApp chatApp = (ChatApp) registry.lookup("ChatingService");
 
 			// Remote method invocation
@@ -119,7 +119,7 @@ public class ChatClient implements Info_itf, Runnable
 
 			System.out.println("Trying to join Chat room");
 			int err = chatApp.joinChatRoom(client);
-			if (err == Registry_itf.s_iError_NoError)
+			if (err == ClientBase.s_iError_NoError)
 			{
 				System.out.println("NOTICE: Chat room joined");
 				System.out.println("type : '@-QUIT' to leave the chat room");

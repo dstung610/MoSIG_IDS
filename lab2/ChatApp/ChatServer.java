@@ -11,10 +11,10 @@ public class ChatServer
         try
         {
             // Create a Hello remote object
-            RegistryImpl r = new RegistryImpl();
+            ClientBaseImpl r = new ClientBaseImpl();
             ChatAppImpl c = new ChatAppImpl();
 
-            Registry_itf r_stub = (Registry_itf) UnicastRemoteObject.exportObject(r, 0);
+            ClientBase r_stub = (ClientBase) UnicastRemoteObject.exportObject(r, 0);
             ChatApp c_stub = (ChatApp) UnicastRemoteObject.exportObject(c, 0);
 
             // Register the remote object in RMI registry with a given identifier
