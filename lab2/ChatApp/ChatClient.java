@@ -12,7 +12,7 @@ public class ChatClient implements Info_itf, Runnable
 
   	private String m_sName;
   	private LinkedList<String> m_qsMessageBuffer;
-	private LinkedList<String> m_qsChatLog;
+	
 	private int m_iMessageCount;
 
   	public ChatClient(String name)
@@ -87,35 +87,6 @@ public class ChatClient implements Info_itf, Runnable
 			}
 		}
   	}
-	
-	private void saveChatLog()
-	{
-		try  
-		{
-			PrintStream out = new PrintStream(new FileOutputStream("./" + getName() + ".log"));
-			for (String line : m_qsChatLog)
-				out.println(line);
-			out.close();
-		}
-		catch (IOException e)
-		{
-			System.out.println(e);
-		}
-		
-	}
-	
-	private void addToChatLog()
-	{
-	}
-	
-	private void loadChatLog()
-	{
-		BufferedReader reader = new BufferedReader(new FileReader("./" + getName() + ".log"));
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			m_qsChatLog.add(line);
-		}
-	}
   	
   	public static void main(String [] args) 
   	{
@@ -170,10 +141,8 @@ public class ChatClient implements Info_itf, Runnable
 					else
 					{
 						///send userInput
-						chatApp.saySomething(client.getName(), userInput);
-						System.out.println("Me: " + userInput);
+						chatApp.saySomething(client.getName(), userInput);						
 					}
-					// System.out.println("echo: " + userInput);
 				} 			
 			}
 			else
