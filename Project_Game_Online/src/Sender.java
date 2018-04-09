@@ -49,7 +49,7 @@ public class Sender {
 		try {
 			// String message = "Hello World!";
 			channel.basicPublish("", m_sQueueName, null, message.getBytes("UTF-8"));
-			System.out.println(" [x] Sent '" + message + "'");
+			System.out.println(m_sQueueName + " [x] Sent '" + message + "'");
 		} catch (UnsupportedEncodingException uee) {
 			System.out.println(uee.getMessage());
 		} catch (IOException ie) {
