@@ -1,11 +1,9 @@
-package Game;
+// package Game;
 
-public class GameSettings
-{
+public class GameSettings {
 	static public final String host = "localhost";
-	
-	static public String GenerateChanelName(String from, String to)
-	{
+
+	static public String GenerateChanelName(String from, String to) {
 		return "cn_" + from + "_" + to + "__";
 	}
 }
