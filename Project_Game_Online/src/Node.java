@@ -1,16 +1,19 @@
+import java.util.LinkedList;
+
 public class Node implements Runnable
 {
     static public final int s_iMaxZonePerNode = 1;
     // private Zone zones = new Zone[s_iMaxZonePerNode];//simple case
+    LinkedList<String> sBuffer;
 
     class Connector
     {
         Sender out;
         Receiver in;
-        StringBuffer sBuffer;
-        public Connector(String sServerSrc, String sServerDst)
+        
+        public Connector(String sServerSrc, String sServerDst, LinkedList<String> sBuffer)
         {
-            sBuffer = new StringBuffer();
+            
             out = new Sender(GameSettings.host, GameSettings.GenerateChanelName(sServerSrc, sServerDst));
             in = new Receiver(GameSettings.host, GameSettings.GenerateChanelName(sServerDst, sServerSrc), sBuffer);
         }
@@ -20,9 +23,9 @@ public class Node implements Runnable
             out.send(msg);
         }
 
-        public void get()
+        public String get()
         {
-            sBuffer.toString();
+            return sBuffer.pollFirst();
         }
     }
 
@@ -33,6 +36,9 @@ public class Node implements Runnable
     public Node (String name)
     {
         myName = name;
+        sBuffer = new LinkedList<String>();
+        Thread threadPullServerMessage = new Thread(this);
+        threadPullServerMessage.start();
     }
 
     public String getName()
@@ -42,11 +48,11 @@ public class Node implements Runnable
 
     public void setLeftNode(String sNodeName)
     {
-        cLeft = new Connector(myName, sNodeName);
+        cLeft = new Connector(myName, sNodeName, sBuffer);
     }
     public void setRightNode(String sNodeName)
     {
-        cRight = new Connector(myName, sNodeName);
+        cRight = new Connector(myName, sNodeName, sBuffer);
     }
 
     public void sendLeft(String msg)
@@ -62,14 +68,19 @@ public class Node implements Runnable
         
     }
 
+    public void ProcessMessage()
+    {
+        System.out.println(myName + " process message: " + sBuffer.pollFirst());
+    }
+
     public void run()
     {
         while(true)
         {
             while (true)
             {		
-                if (GetMessageCount() > 0)
-                    PullMessage();
+                if (sBuffer.size() > 0)
+                    ProcessMessage();
                 try 
                 {		
                     Thread.sleep(300);
