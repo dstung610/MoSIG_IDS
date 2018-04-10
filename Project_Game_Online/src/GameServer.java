@@ -33,9 +33,15 @@ public class GameServer {
 		n4.setRightNode(n1.getName());
 
 		//test connection
-		// n1.sendLeft("test test");
+		n1.sendLeft("test test");
 		n1.sendLeft("test test 1");
 		n1.sendLeft("test test 2");
 		n1.sendLeft("test test 3");
+
+		// n1.Close();
+		// n2.Close();
+		// n3.Close();
+		// n4.Close();
+		// System.exit(0);
 	}
 }

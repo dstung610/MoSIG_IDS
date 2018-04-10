@@ -24,7 +24,7 @@ public class Sender {
 			m_sHost = host;
 			factory = new ConnectionFactory();
 			factory.setHost(m_sHost);
-			Connection connection = factory.newConnection();
+			connection = factory.newConnection();
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);
 		} catch (IOException ie) {

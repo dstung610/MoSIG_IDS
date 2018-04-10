@@ -23,7 +23,7 @@ public class Receiver {
 			factory = new ConnectionFactory();
 			factory.setHost(m_sHost);
 
-			Connection connection = factory.newConnection();
+			connection = factory.newConnection();
 
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);

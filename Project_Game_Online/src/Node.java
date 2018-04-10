@@ -27,6 +27,12 @@ public class Node implements Runnable
         {
             return sBuffer.pollFirst();
         }
+
+        public void close()
+        {
+            out.close();
+            in.close();
+        }
     }
 
     Connector cLeft, cRight;//links to other server left and right;
@@ -91,5 +97,11 @@ public class Node implements Runnable
                 }
             }
         }
+    }
+
+    public void Close()
+    {
+        cLeft.close();
+        cRight.close();
     }
 }
