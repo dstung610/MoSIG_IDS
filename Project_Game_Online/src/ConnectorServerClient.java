@@ -5,11 +5,11 @@ class ConnectorServerClient {
     ReceiverOpened in;
     LinkedList<String> sBuffer;
 
-    public ConnectorServerClient(String sExchanceName)
+    public ConnectorServerClient()
     {       
         sBuffer = new LinkedList<String>();
-        out = new SenderBroadcast(GameSettings.host, sExchangeName);
-        in = new ReceiverOpened(GameSettings.host, sExchangeName, sBuffer); 
+        out = new SenderBroadcast(GameUtils.host, GameUtils.s_sExchangeNameServerClient);
+        in = new ReceiverOpened(GameUtils.host, GameUtils.s_sExchangeNameClientServer, sBuffer); 
     }
 
     public void send(String msg) {

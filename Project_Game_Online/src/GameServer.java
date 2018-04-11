@@ -2,11 +2,29 @@
 
 // import Game.Sender;
 // import Game.Receiver;
-// import Game.GameSettings;
+// import Game.GameUtils;
 
-public class GameServer {
+public class GameServer //implements Runnable 
+{
+
+	static void ProcessMessage()
+	{
+		if (m_ConnectorWithClient == null)
+			return;
+		String msg = m_ConnectorWithClient.getMessage();
+		if (msg == null)
+			return;
+		
+		System.out.println("SERVER process message: " + msg);
+	}
+
+	static void ActionAssignPlayerToNode()
+	{
+		
+	}
 
 	static String m_sServerName;
+	static ConnectorServerClient m_ConnectorWithClient;
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -32,13 +50,28 @@ public class GameServer {
 		n3.setRightNode(n4.getName());
 		n4.setRightNode(n1.getName());
 
+		m_ConnectorWithClient = new ConnectorServerClient();
+
 		//test connection
-		n1.sendLeft("test test");
-		n1.sendLeft("test test 1");
-		n1.sendLeft("test test 2");
-		n1.sendLeft("test test 3");
+		n1.sendLeft("ServerReady");
+		n2.sendLeft("ServerReady");
+		n3.sendLeft("ServerReady");
+		n4.sendLeft("ServerReady");
 
 		//nen lam them 1 cai' broadcast chanel cho server
+		
+		//main loop
+		boolean isRunning = true;
+		while (true)
+		{
+			ProcessMessage();
+			try {
+                Thread.sleep(300);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+		}
+
 		// n1.Close();
 		// n2.Close();
 		// n3.Close();

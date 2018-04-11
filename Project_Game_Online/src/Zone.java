@@ -7,7 +7,7 @@ public class Zone
     public Zone()
     {
         m_lPlayers = new LinkedList<Player>();
-        m_acMiniMap = new char[GameSettings.s_ZoneSize][GameSettings.s_ZoneSize];
+        m_acMiniMap = new char[GameUtils.s_ZoneSize][GameUtils.s_ZoneSize];
     }
 
     public char[][] getMiniMap()
@@ -18,7 +18,7 @@ public class Zone
     public String getMiniMapAsString()
     {
         StringBuilder sB = new StringBuilder();
-        for (int i = 0; i < GameSettings.s_ZoneSize; i++)
+        for (int i = 0; i < GameUtils.s_ZoneSize; i++)
             sB.append(m_acMiniMap[i]);
         return sB.toString();
     }

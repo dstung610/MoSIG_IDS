@@ -1,12 +1,15 @@
 import java.util.LinkedList;
 
 class ConnectorClientServer {
-    Sender out;
-    Receiver in;
+    SenderBroadcast out;
+    ReceiverOpened in;
     LinkedList<String> sBuffer;
 
-    public ConnectorClientServer(String sSrcName, String sDstName)
-    {        
+    public ConnectorClientServer(String sPlayerName)
+    {       
+        sBuffer = new LinkedList<String>();
+        out = new SenderBroadcast(GameUtils.host, GameUtils.s_sExchangeNameClientServer);
+        in = new ReceiverOpened(GameUtils.host, GameUtils.s_sExchangeNameServerClient, sBuffer); 
     }
 
     public void send(String msg) {

@@ -8,10 +8,9 @@ LIB = src/.:lib/amqp-client-4.0.2.jar:lib/slf4j-api-1.7.21.jar:lib/slf4j-simple-
 		$(JAVAC) $(JFLAGS) -cp $(LIB) $*.java
 
 CLASSES = \
-		src/Receiver.java \
-		src/GameSettings.java \
-		src/Sender.java \
-		src/GameServer.java
+		src/GameUtils.java \
+		src/GameServer.java \
+		src/GameClient.java
 
 default: classes
 
@@ -24,4 +23,4 @@ runServer:
 	$(JAVA) -cp $(LIB) GameServer $(name)
     # @echo "argument is $(name)"
 runClient:
-	$(JAVA) -cp $(LIB) GameClient $1
+	$(JAVA) -cp $(LIB) GameClient $(name)

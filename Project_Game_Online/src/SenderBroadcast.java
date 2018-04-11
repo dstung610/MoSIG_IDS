@@ -51,7 +51,7 @@ public class SenderBroadcast {
 		try {
 			// String message = "Hello World!";
 			channel.basicPublish(m_sExchangeName, "", null, message.getBytes("UTF-8"));
-			System.out.println(m_sQueueName + " [x] BroastCast '" + message + "'");
+			System.out.println(" Send '" + message + "'");
 		} catch (UnsupportedEncodingException uee) {
 			System.out.println(uee.getMessage());
 		} catch (IOException ie) {

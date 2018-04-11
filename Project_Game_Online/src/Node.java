@@ -3,9 +3,8 @@ import java.util.LinkedList;
 public class Node implements Runnable {
     static public final int s_iMaxZonePerNode = 1;
     // private Zone zones = new Zone[s_iMaxZonePerNode];//simple case
-    
 
-    ConnectorNode cLeft, cRight;//links to other server left and right;
+    ConnectorNodes cLeft, cRight;//links to other server left and right;
 
     private String myName;
 
@@ -20,11 +19,11 @@ public class Node implements Runnable {
     }
 
     public void setLeftNode(String sNodeName) {
-        cLeft = new Connector(myName, sNodeName);
+        cLeft = new ConnectorNodes(myName, sNodeName);
     }
 
     public void setRightNode(String sNodeName) {
-        cRight = new Connector(myName, sNodeName);
+        cRight = new ConnectorNodes(myName, sNodeName);
     }
 
     public void sendLeft(String msg) {
@@ -40,13 +39,22 @@ public class Node implements Runnable {
     }
 
     public void ProcessMessage() {
-        System.out.println(myName + " process message: " + sBuffer.pollFirst());
+        String msg = null;
+        if (cLeft != null)
+            msg = cLeft.getMessage();
+        if (msg == null)
+            if (cRight != null)
+                msg = cRight.getMessage();
+        if (msg == null)
+            return;
+        //Do something
+        System.out.println(myName + " process message: " + msg);
     }
 
     public void run() {
         while (true) {
-            if (sBuffer.size() > 0)
-                ProcessMessage();
+            ProcessMessage();
+
             try {
                 Thread.sleep(300);
             } catch (Exception e) {
