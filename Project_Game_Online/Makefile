@@ -24,4 +24,4 @@ runServer:
 	$(JAVA) -cp $(LIB) GameServer $(name)
     # @echo "argument is $(name)"
 runClient:
-	# $(JAVA) -cp $(LIB) GameClient $1
+	$(JAVA) -cp $(LIB) GameClient $1

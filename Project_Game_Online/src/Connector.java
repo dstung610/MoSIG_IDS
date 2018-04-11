@@ -1,9 +1,9 @@
 import java.util.LinkedList;
 
 class Connector {
-    Sender out;
-    Receiver in;
-    LinkedList<String> sBuffer;
+    protected Sender out;
+    protected Receiver in;
+    protected LinkedList<String> sBuffer;
 
     public Connector(String sSrcName, String sDstName)
     {

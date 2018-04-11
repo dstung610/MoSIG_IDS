@@ -5,13 +5,12 @@ public class Node implements Runnable {
     // private Zone zones = new Zone[s_iMaxZonePerNode];//simple case
     
 
-    Connector cLeft, cRight;//links to other server left and right;
+    ConnectorNode cLeft, cRight;//links to other server left and right;
 
     private String myName;
 
     public Node(String name) {
         myName = name;
-        sBuffer = new LinkedList<String>();
         Thread threadPullServerMessage = new Thread(this);
         threadPullServerMessage.start();
     }
