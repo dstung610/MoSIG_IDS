@@ -38,6 +38,7 @@ public class GameServer {
 		n1.sendLeft("test test 2");
 		n1.sendLeft("test test 3");
 
+		//nen lam them 1 cai' broadcast chanel cho server
 		// n1.Close();
 		// n2.Close();
 		// n3.Close();

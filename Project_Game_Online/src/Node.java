@@ -3,31 +3,7 @@ import java.util.LinkedList;
 public class Node implements Runnable {
     static public final int s_iMaxZonePerNode = 1;
     // private Zone zones = new Zone[s_iMaxZonePerNode];//simple case
-    LinkedList<String> sBuffer;
-
-    class Connector {
-        Sender out;
-        Receiver in;
-
-        public Connector(String sServerSrc, String sServerDst, LinkedList<String> sBuffer) {
-
-            out = new Sender(GameSettings.host, GameSettings.GenerateChanelName(sServerSrc, sServerDst));
-            in = new Receiver(GameSettings.host, GameSettings.GenerateChanelName(sServerDst, sServerSrc), sBuffer);
-        }
-
-        public void send(String msg) {
-            out.send(msg);
-        }
-
-        public String get() {
-            return sBuffer.pollFirst();
-        }
-
-        public void close() {
-            out.close();
-            in.close();
-        }
-    }
+    
 
     Connector cLeft, cRight;//links to other server left and right;
 
@@ -45,11 +21,11 @@ public class Node implements Runnable {
     }
 
     public void setLeftNode(String sNodeName) {
-        cLeft = new Connector(myName, sNodeName, sBuffer);
+        cLeft = new Connector(myName, sNodeName);
     }
 
     public void setRightNode(String sNodeName) {
-        cRight = new Connector(myName, sNodeName, sBuffer);
+        cRight = new Connector(myName, sNodeName);
     }
 
     public void sendLeft(String msg) {

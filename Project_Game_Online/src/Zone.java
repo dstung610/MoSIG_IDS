@@ -1,9 +1,12 @@
+import java.util.LinkedList;
 
 public class Zone
 {    
+    private LinkedList<Player> m_lPlayers;
     private char[][] m_acMiniMap;
     public Zone()
     {
+        m_lPlayers = new LinkedList<Player>();
         m_acMiniMap = new char[GameSettings.s_ZoneSize][GameSettings.s_ZoneSize];
     }
 
