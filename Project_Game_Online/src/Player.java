@@ -7,9 +7,9 @@ class Player implements Runnable {
     vec2 m_v2Target;
     Thread m_Thread;
 
-    public Player(String name, vec2 position) 
+    public Player(String sPlayerName, vec2 position) 
     {
-        m_sName = name;
+        m_sName = sPlayerName;
         m_v2Position = new vec2(position);
         m_Thread = new Thread(this);
         m_Thread.start();
@@ -24,7 +24,7 @@ class Player implements Runnable {
         }
     }
 
-    public ChooseATarget()
+    public void ChooseATarget()
     {
         m_v2Target.x = 100;//shoul be random
         m_v2Target.y = 100;//shoul be random
@@ -56,5 +56,10 @@ class Player implements Runnable {
     public vec2 getSpeed()
     {
         return m_v2Speed;
+    }
+
+    public String getName()
+    {
+        return m_sName;
     }
 }

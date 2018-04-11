@@ -1,6 +1,18 @@
 public class GameClient
 {
     static ConnectorClientServer m_cToServer;
+    static ConnectorNodes m_cToNode;
+
+    static void ProcessMessage()
+	{
+		if (m_ConnectorWithClient == null)
+			return;
+		String msg = m_ConnectorWithClient.getMessage();
+		if (msg == null)
+			return;
+		
+		System.out.println("SERVER process message: " + msg);
+	}
     
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
@@ -13,6 +25,18 @@ public class GameClient
         m_cToServer = new ConnectorClientServer(sPlayerName);
 
         m_cToServer.send(GameUtils.GenerateLoginMsg(sPlayerName));
+
+        //main loop
+		boolean isRunning = true;
+		while (isRunning)
+		{
+			ProcessMessage();
+			try {
+                Thread.sleep(300);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+		}
         
         System.exit(0);
     }
