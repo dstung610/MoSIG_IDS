@@ -33,22 +33,22 @@ public class ReceiverOpened {
 			m_sQueueName = channel.queueDeclare().getQueue();
 			channel.queueBind(m_sQueueName, sExchangeName, "");
 
-			// System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+			// GameUtils.LOG(" [*] Waiting for messages. To exit press CTRL+C");
 			Consumer consumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 						throws IOException {
 					String message = new String(body, "UTF-8");
-					System.out.println(m_sQueueName + " [x] Received '" + message + "'");
+					GameUtils.LOG(m_sQueueName + " [x] Received '" + message + "'");
 					sBuffer.add(message);
 				}
 			};
 			
 			channel.basicConsume(m_sQueueName, true, consumer);
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 
 	}

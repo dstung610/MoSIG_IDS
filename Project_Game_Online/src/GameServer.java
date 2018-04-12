@@ -13,11 +13,19 @@ public class GameServer //implements Runnable
 		if (msg == null)
 			return;
 
-		System.out.println("SERVER process message: " + msg);
+		if (msg.contains("lOGINreqESt"))
+		{
+			msg = msg.split(":")[1];
+			ActionAssignPlayerToNode(msg);
+		}
+		GameUtils.LOG("SERVER process message: " + msg);
 	}
 
 	static void ActionAssignPlayerToNode(String sPlayerName) {
 		Player player = LoadPlayer(sPlayerName);
+		
+		GameUtils.LOG("XXXXXXXX" + player.getName() + player.getPosition().toString());
+
 		Node node = null;
 		if (player.getPosition().x < GameUtils.s_SettingZoneSize
 				&& player.getPosition().y < GameUtils.s_SettingZoneSize)
@@ -34,8 +42,12 @@ public class GameServer //implements Runnable
 
 		if (node != null)
 		{
-			node.AddPlayer(player);
-			
+			// GameUtils.LOG("NNNN" + node.getName());
+			node.AddPlayer(sPlayerName);
+			m_ConnectorWithClient.openPrivateChanel(GameUtils.GenerateChanelName(sPlayerName, "SUPer_serVER"));
+			m_ConnectorWithClient.sendPrivateMsg("SV_NODE:" + node.getName());
+			m_ConnectorWithClient.sendPrivateMsg(packPlayerInfo(sPlayerName, player.getPosition().x, player.getPosition().y));
+			m_ConnectorWithClient.closePrivateChanel();
 		}
 	}
 
@@ -50,12 +62,12 @@ public class GameServer //implements Runnable
 	// 	}
 	// 	catch (IOException e)
 	// 	{
-	// 		System.out.println(e);
+	// 		GameUtils.LOG(e.getMessage());
 	// 	}
 
 	// }
 
-	static Player LoadPlayer(String sPlayerName) {
+	static String LoadPlayerInfo(String sPlayerName) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(GameUtils.GeneratePlayerSaveFile(sPlayerName)));
 			String line = null;
@@ -70,11 +82,11 @@ public class GameServer //implements Runnable
 			int x = Integer.parseInt(slPlayerInfo[0]);
 			int y = Integer.parseInt(slPlayerInfo[1]);
 
-			return new Player(sPlayerName, new vec2(x, y));
+			return sPlayerName + ":" + (new vec2(x, y)).toString();
 		} catch (IOException e) {
-			System.out.println(e);
-			System.out.println("Reset player " + sPlayerName + " to position (0, 0)");
-			return new Player(sPlayerName, new vec2(0, 0));
+			GameUtils.LOG(e.getMessage());
+			GameUtils.LOG("Reset player " + sPlayerName + " to position (0, 0)");
+			return sPlayerName + ":0 0";
 		}
 	}
 
@@ -103,6 +115,14 @@ public class GameServer //implements Runnable
 		}
 	}
 
+	static void CloseNodes()
+	{
+		for (int i = 0; i < GameUtils.s_SettingNbZones; i++) {
+			m_lNodes[i].Close();
+		}
+
+	}
+
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
 			System.out.println("Usage:\nGameServer <Server Name>");
@@ -114,14 +134,6 @@ public class GameServer //implements Runnable
 
 		m_ConnectorWithClient = new ConnectorServerClient();
 
-		// //test connection
-		// n1.sendLeft("ServerReady");
-		// n2.sendLeft("ServerReady");
-		// n3.sendLeft("ServerReady");
-		// n4.sendLeft("ServerReady");
-
-		//nen lam them 1 cai' broadcast chanel cho server
-
 		//main loop
 		boolean isRunning = true;
 		while (isRunning) {
@@ -129,14 +141,10 @@ public class GameServer //implements Runnable
 			try {
 				Thread.sleep(300);
 			} catch (Exception e) {
-				System.out.println(e);
+				GameUtils.LOG(e.getMessage());
 			}
 		}
 
-		n1.Close();
-		n2.Close();
-		n3.Close();
-		n4.Close();
 		System.exit(0);
 	}
 }

@@ -1,9 +1,9 @@
 import java.lang.Math;
 
 public class vec2 {
-    public int x, y;
+    public float x, y;
 
-    public vec2(int x, int y) {
+    public vec2(float x, float y) {
         this.x = x;
         this.y = y;
     }
@@ -24,5 +24,10 @@ public class vec2 {
 
     public float getLenght() {
         return (float)Math.sqrt(x * x + y * y);
+    }
+
+    public String toString()
+    {
+        return "" + x + " " + y;
     }
 }

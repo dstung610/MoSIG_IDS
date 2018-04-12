@@ -28,9 +28,9 @@ public class Sender {
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 	}
 
@@ -39,9 +39,9 @@ public class Sender {
 			channel.close();
 			connection.close();
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 	}
 
@@ -49,11 +49,11 @@ public class Sender {
 		try {
 			// String message = "Hello World!";
 			channel.basicPublish("", m_sQueueName, null, message.getBytes("UTF-8"));
-			System.out.println(m_sQueueName + " [x] Sent '" + message + "'");
+			GameUtils.LOG(m_sQueueName + " [x] Sent '" + message + "'");
 		} catch (UnsupportedEncodingException uee) {
-			System.out.println(uee.getMessage());
+			GameUtils.LOG(uee.getMessage());
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		}
 	}
 }

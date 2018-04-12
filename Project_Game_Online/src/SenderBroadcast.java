@@ -30,9 +30,9 @@ public class SenderBroadcast {
 			channel.exchangeDeclare(m_sExchangeName, "fanout");
 			
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 	}
 
@@ -41,9 +41,9 @@ public class SenderBroadcast {
 			channel.close();
 			connection.close();
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 	}
 
@@ -51,11 +51,11 @@ public class SenderBroadcast {
 		try {
 			// String message = "Hello World!";
 			channel.basicPublish(m_sExchangeName, "", null, message.getBytes("UTF-8"));
-			System.out.println(" Send '" + message + "'");
+			GameUtils.LOG(" Send '" + message + "'");
 		} catch (UnsupportedEncodingException uee) {
-			System.out.println(uee.getMessage());
+			GameUtils.LOG(uee.getMessage());
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		}
 	}
 }
