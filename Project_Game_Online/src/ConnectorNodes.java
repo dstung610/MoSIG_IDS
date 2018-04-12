@@ -20,8 +20,15 @@ class ConnectorNodes {
         return sBuffer.pollFirst();
     }
 
+    public void stopReciver()
+    {
+        in.close();
+    }
+
+
     public void close() {
         out.close();
-        in.close();
+        if (in != null)
+            in.close();
     }
 }

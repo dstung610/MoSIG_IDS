@@ -27,6 +27,7 @@ public class Sender {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);
+			GameUtils.LOG("S :" + m_sQueueName);
 		} catch (IOException ie) {
 			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {

@@ -6,7 +6,7 @@ public class Node implements Runnable {
 
     ConnectorNodes cLeft, cRight;//links to other server left and right;
 
-    LinkedList<ConnectorNodes> m_lcGameClient;
+    LinkedList<ConnectorNodes> m_lcGameClients;
     LinkedList<String> m_lPlayers;
 
     private String myName;
@@ -16,14 +16,20 @@ public class Node implements Runnable {
 
     private char[] m_caMiniMap;
 
+    LinkedList<String> m_lsRequestServer;
+
     public Node(String name, vec2 v2TopLeft, vec2 v2BottomRight) {
         myName = name;
         m_v2TopLeft = v2TopLeft;
         m_v2BottomRight = v2BottomRight;
         m_caMiniMap = new char[GameUtils.s_SettingZoneSize * GameUtils.s_SettingZoneSize];
+        for (int i = 0; i < GameUtils.s_SettingZoneSize * GameUtils.s_SettingZoneSize; i++) {
+            m_caMiniMap[i] = '0';
+        }
 
         m_lPlayers = new LinkedList<String>();
-        m_lcGameClient = new LinkedList<ConnectorNodes>();
+        m_lcGameClients = new LinkedList<ConnectorNodes>();
+        m_lsRequestServer = new LinkedList<String>();
 
         Thread threadPullServerMessage = new Thread(this);
         threadPullServerMessage.start();
@@ -38,7 +44,7 @@ public class Node implements Runnable {
     }
 
     public void setRightNode(String sNodeName) {
-        // cRight = new ConnectorNodes(myName, sNodeName);
+        cRight = new ConnectorNodes(myName, sNodeName);
     }
 
     public void sendLeft(String msg) {
@@ -46,7 +52,7 @@ public class Node implements Runnable {
     }
 
     public void sendRight(String msg) {
-        // cRight.send(msg);
+        cRight.send(msg);
     }
 
     public void boardcast(String msg) {
@@ -65,14 +71,20 @@ public class Node implements Runnable {
     }
 
     public void ProcessMessageAllNodeMsg(String msg) {
+        String originMsg = msg;
+        // GameUtils.LOG(myName + " process message: " + msg);
         String[] msgs;
-        msg = msg.split("*")[1];
-        msgs = msg.split("|");
+        msgs = msg.split("@");
+        msg = msgs[1];
+        // GameUtils.LOG(" 1111 " + msg);
+        msgs = msg.split("#");
         String srcNode = msgs[0];
         msg = msgs[1];
+        // GameUtils.LOG(" 2222 " + msg);
         if (srcNode.compareTo(myName) == 0)
             return;//do nothing
-
+        
+            
         msgs = msg.split("-");
         String task = msgs[0];
         msg = msgs[1];
@@ -81,13 +93,32 @@ public class Node implements Runnable {
             String sPlayerName = msgs[0];
             msg = msgs[1];
             msgs = msg.split(" ");
-            float x = Float.parseFloat(sPos[0]);
-            float y = Float.parseFloat(sPos[1]);
+            float x = Float.parseFloat(msgs[0]);
+            float y = Float.parseFloat(msgs[1]);
             if (isInsideMyZone(new vec2(x, y))) {
                 if (!isPlayerInMyList(sPlayerName))
+                {
                     AddPlayer(sPlayerName);
+                    sendLeft(GameUtils.packPlayerRemoveMsg(myName, sPlayerName));
+                }
             }
         }
+        if (task.compareTo("REMOVE") == 0) {
+            msgs = msg.split(":");
+            String sPlayerName = msgs[0];
+            if (isPlayerInMyList(sPlayerName))
+            {                
+                int i = m_lPlayers.indexOf(sPlayerName);
+
+                m_lsRequestServer.add("ASSIGNTO@"+srcNode+":" + sPlayerName);
+
+                m_lPlayers.remove(i);
+                m_lcGameClients.get(i).close();
+                m_lcGameClients.remove(i);
+            }
+        }
+
+        sendLeft(originMsg);
 
         // m_cToServer.closePrivateChanelToServer();//close current connection
 
@@ -95,72 +126,68 @@ public class Node implements Runnable {
 
     }
 
-    private void ProcessMessagePlayerMsg(String msg)
-    {
-        String[] msgs;
-        msg = msg.split("*")[1];
-        msgs = msg.split("|");
-        String srcNode = msgs[0];
-        msg = msgs[1];
-        if (srcNode.compareTo(myName) == 0)
-            return;//do nothing
+    private void ProcessMessagePlayerMsg(String msg) {
+        GameUtils.LOG(myName + " process message: " + msg);
 
-            if (isInsideMyZone(new vec2(x, y))) 
-            {
-                if (isPlayerInMyList(sPlayerName))
-                {
-                    UpdateMiniMapInfo((int)x, (int)y);
-                }
-                else
-                {
-                    SendPlayerInfoToOtherNodes(sPlayerName, x, y);
-                }
+        Player player = GameUtils.unpackPlayerInfo(msg);
+        if (isInsideMyZone(player.getPosition())) {
+            if (isPlayerInMyList(player.getName())) {
+                updateMiniMapInfo((int) player.getPosition().x, (int) player.getPosition().y);
             }
+        } else {
+            int i = m_lPlayers.indexOf(player.getName());
+            m_lcGameClients.get(i).stopReciver();
+            sendPlayerInfoToOtherNodes(player.getName(), player.getPosition().x, player.getPosition().y);
         }
     }
 
-    private void UpdateMiniMapInfo(int x, int y)
-    {
-        m_caMiniMap[x * GameUtils.s_SettingZoneSize + y] = 1;
+    private void updateMiniMapInfo(int x, int y) {
+        x = x - (int) m_v2TopLeft.x;
+        y = y - (int) m_v2TopLeft.y;
+        m_caMiniMap[x * GameUtils.s_SettingZoneSize + y] = '1';
+        // GameUtils.LOG(String.valueOf(m_caMiniMap));
     }
 
-    private void SendPlayerInfoToOtherNodes(String sPlayerName, float x, float y)
-    {
+    private void sendPlayerInfoToOtherNodes(String sPlayerName, float x, float y) {
         cLeft.send(GameUtils.packPlayerForwardMsg(myName, sPlayerName, x, y));
     }
 
     public void ProcessMessage() {
         String msg = null;
+        for (ConnectorNodes c : m_lcGameClients) {
+            msg = c.getMessage();
+            if (msg != null && msg.contains("PLAYERINFO@")) {
+                ProcessMessagePlayerMsg(msg);
+            }
+        }
+
+        // GameUtils.LOG(myName + "ProcessMessage");
+        msg = null;
         if (cLeft != null)
             msg = cLeft.getMessage();
-        // if (msg == null)
-        //     if (cRight != null)
-        //         msg = cRight.getMessage();
-        if (msg == null) {
-            return;
-        }
+        if (msg == null && cRight != null)
+            msg = cRight.getMessage();
 
-        if (msg.contains("PLAYER*")) {
+        
 
-            ProcessMessagePlayerMsg(msg);
-
-        }
-
-        if (msg.contains("ALLNODES*")) {
+        if (msg != null && msg.contains("ALLNODES@")) {
 
             ProcessMessageAllNodeMsg(msg);
-
         }
-        GameUtils.LOG(myName + " process message: " + msg);
     }
 
     public void run() {
         while (true) {
+
+            // GameUtils.LOG(myName);
+            //clear map
+            for (int i = 0; i < GameUtils.s_SettingZoneSize * GameUtils.s_SettingZoneSize; i++) {
+                m_caMiniMap[i] = '0';
+            }
             ProcessMessage();
-            // UpdatePlayerPosition();
 
             try {
-                Thread.sleep(300);
+                Thread.sleep(50);
             } catch (Exception e) {
                 GameUtils.LOG(e.getMessage());
             }
@@ -169,13 +196,19 @@ public class Node implements Runnable {
 
     public void Close() {
         cLeft.close();
-        // cRight.close();
+        cRight.close();
     }
 
     public boolean AddPlayer(String sPlayerName) {
+        GameUtils.LOG(myName + " AddPlayer " + sPlayerName);
         m_lPlayers.add(sPlayerName);
 
-        m_lcGameClient.add(new ConnectorNodes(myName, sPlayerName));
+        m_lcGameClients.add(new ConnectorNodes(myName, sPlayerName));
         return true;
+    }
+
+    public String getRequest()
+    {
+        return m_lsRequestServer.poll();
     }
 }

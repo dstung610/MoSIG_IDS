@@ -27,6 +27,7 @@ public class Receiver {
 
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);
+			GameUtils.LOG("R :" + m_sQueueName);
 
 			// GameUtils.LOG(" [*] Waiting for messages. To exit press CTRL+C");
 			Consumer consumer = new DefaultConsumer(channel) {
@@ -39,6 +40,7 @@ public class Receiver {
 				}
 			};
 			channel.basicConsume(m_sQueueName, true, consumer);
+
 		} catch (IOException ie) {
 			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {

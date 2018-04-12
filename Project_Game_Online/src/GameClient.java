@@ -3,7 +3,7 @@ public class GameClient {
     static ConnectorNodes m_cToNode;
     static String m_sPlayerName;
 
-    static Player m_Player;
+    static Player m_Player = null;
 
     static void ProcessMessage() {
         String msg = null;
@@ -11,7 +11,7 @@ public class GameClient {
             msg = m_cToServer.getMessage();
 
         if (msg == null && m_cToNode != null)
-                msg = m_cToNode.getMessage();
+            msg = m_cToNode.getMessage();
 
         if (msg == null)
             return;
@@ -21,22 +21,32 @@ public class GameClient {
         //setup connection to server node
         if (msg.contains("SV_NODE")) {
             msg = msg.split(":")[1];
-            m_cToServer.closePrivateChanelToServer();//close current connection
+            // if (m_cToServer != null) 
+                // m_cToServer.closePrivateChanelToServer();//close current connection
+            if (m_cToNode!=null)
+                m_cToNode.close();
 
             m_cToNode = new ConnectorNodes(m_sPlayerName, msg);
+            GameUtils.LOG("New connection to : " + msg);
 
+        } else if (msg.contains("PLAYERINFO@")) {
+            // GameUtils.LOG("11111");
+            m_Player = GameUtils.unpackPlayerInfo(msg);
+            // GameUtils.LOG("11111" + m_Player.getName());
+            m_Player.chooseARandomTarget();
+        }
+    }
 
+    static void updatePlayer() {
+        if (m_Player == null) {
+            return;
+        }
 
-            m_Player = new Player(sPlayerName, position);
+        m_Player.moveTowardTarget();
+        m_cToNode.send(GameUtils.packPlayerInfo(m_Player.getName(), m_Player.getPosition().x, m_Player.getPosition().y));
 
-        } else if (msg.contains("PLAYER*")) 
-        {
-            msg = msg.split(":")[1];
-            String[] sPos = msg.split(" ");
-            float x = Float.parseFloat(sPos[0]);
-            float y = Float.parseFloat(sPos[1]);
-
-            GameUtils.LOG("Receive Player position: " + x + " " + y);
+        if (m_Player.hasReachedTarget()) {
+            m_Player.chooseARandomTarget();
         }
     }
 
@@ -58,8 +68,9 @@ public class GameClient {
         boolean isRunning = true;
         while (isRunning) {
             ProcessMessage();
+            updatePlayer();
             try {
-                Thread.sleep(300);
+                Thread.sleep(500);
             } catch (Exception e) {
                 GameUtils.LOG(e.getMessage());
             }

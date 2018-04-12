@@ -13,18 +13,18 @@ public class GameServer //implements Runnable
 		if (msg == null)
 			return;
 
-		if (msg.contains("lOGINreqESt"))
-		{
+		if (msg.contains("lOGINreqESt")) {
 			msg = msg.split(":")[1];
 			ActionAssignPlayerToNode(msg);
 		}
 		GameUtils.LOG("SERVER process message: " + msg);
 	}
 
-	static void ActionAssignPlayerToNode(String sPlayerName) {
-		Player player = LoadPlayer(sPlayerName);
-		
-		GameUtils.LOG("XXXXXXXX" + player.getName() + player.getPosition().toString());
+	static void ActionAssignPlayerToNode(String sPlayerName) 
+	{
+		Player player = LoadPlayerInfo(sPlayerName);
+
+		// GameUtils.LOG("XXXXXXXX" + player.getName() + player.getPosition().toString());
 
 		Node node = null;
 		if (player.getPosition().x < GameUtils.s_SettingZoneSize
@@ -40,13 +40,13 @@ public class GameServer //implements Runnable
 				&& player.getPosition().y >= GameUtils.s_SettingZoneSize)
 			node = m_lNodes[3];
 
-		if (node != null)
-		{
+		if (node != null) {
 			// GameUtils.LOG("NNNN" + node.getName());
 			node.AddPlayer(sPlayerName);
 			m_ConnectorWithClient.openPrivateChanel(GameUtils.GenerateChanelName(sPlayerName, "SUPer_serVER"));
 			m_ConnectorWithClient.sendPrivateMsg("SV_NODE:" + node.getName());
-			m_ConnectorWithClient.sendPrivateMsg(packPlayerInfo(sPlayerName, player.getPosition().x, player.getPosition().y));
+			m_ConnectorWithClient.sendPrivateMsg(
+				GameUtils.packPlayerInfo(sPlayerName, player.getPosition().x, player.getPosition().y));
 			m_ConnectorWithClient.closePrivateChanel();
 		}
 	}
@@ -67,7 +67,7 @@ public class GameServer //implements Runnable
 
 	// }
 
-	static String LoadPlayerInfo(String sPlayerName) {
+	static Player LoadPlayerInfo(String sPlayerName) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(GameUtils.GeneratePlayerSaveFile(sPlayerName)));
 			String line = null;
@@ -82,11 +82,11 @@ public class GameServer //implements Runnable
 			int x = Integer.parseInt(slPlayerInfo[0]);
 			int y = Integer.parseInt(slPlayerInfo[1]);
 
-			return sPlayerName + ":" + (new vec2(x, y)).toString();
+			return new Player(sPlayerName, new vec2(x, y));
 		} catch (IOException e) {
 			GameUtils.LOG(e.getMessage());
 			GameUtils.LOG("Reset player " + sPlayerName + " to position (0, 0)");
-			return sPlayerName + ":0 0";
+			return new Player(sPlayerName, new vec2(0, 0));
 		}
 	}
 
@@ -98,7 +98,9 @@ public class GameServer //implements Runnable
 		m_lNodes = new Node[GameUtils.s_SettingNbZones];
 
 		for (int i = 0; i < GameUtils.s_SettingNbZones; i++) {
-			m_lNodes[i] = new Node("node_" + i);
+			m_lNodes[i] = new Node("node_" + i, 
+									new vec2(GameUtils.s_faZoneTopX[i], GameUtils.s_faZoneTopY[i]),
+									new vec2(GameUtils.s_faZoneBottomX[i], GameUtils.s_faZoneBottomY[i]));
 		}
 		// n1 -- n2
 		//  |	 |
@@ -115,12 +117,34 @@ public class GameServer //implements Runnable
 		}
 	}
 
-	static void CloseNodes()
-	{
+	static void CloseNodes() {
 		for (int i = 0; i < GameUtils.s_SettingNbZones; i++) {
 			m_lNodes[i].Close();
 		}
 
+	}
+
+	static void ProcessNodesRequests()
+	{
+		String[] msgs;
+		for (int i = 0; i < GameUtils.s_SettingNbZones; i++) {
+			String msg = m_lNodes[i].getRequest();
+			if (msg != null)
+			{
+				if (msg.contains("ASSIGNTO@"))
+				{
+					msgs = msg.split("@");
+					msg = msgs[1];
+					msgs = msg.split(":");
+					String sNodeName = msgs[0];
+					String sPlayerName = msgs[1];
+
+					m_ConnectorWithClient.openPrivateChanel(GameUtils.GenerateChanelName(sPlayerName, "SUPer_serVER"));
+					m_ConnectorWithClient.sendPrivateMsg("SV_NODE:" + sNodeName);
+					m_ConnectorWithClient.closePrivateChanel();
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -134,10 +158,12 @@ public class GameServer //implements Runnable
 
 		m_ConnectorWithClient = new ConnectorServerClient();
 
+		// m_lNodes[0].sendLeft("ALLNODES@123");
 		//main loop
 		boolean isRunning = true;
 		while (isRunning) {
 			ProcessMessage();
+			ProcessNodesRequests();
 			try {
 				Thread.sleep(300);
 			} catch (Exception e) {
