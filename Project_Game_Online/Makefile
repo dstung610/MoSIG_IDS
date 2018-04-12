@@ -11,7 +11,7 @@ CLASSES = \
 		src/GameUtils.java \
 		src/GameServer.java \
 		src/GameClient.java \
-		GUI/GUI.java 
+		src/GUI.java 
 
 default: classes
 
@@ -19,7 +19,6 @@ classes: $(CLASSES:.java=.class)
 
 clean:
 		$(RM) src/*.class
-		$(RM) GUI/*.class
 
 runServer:
 	$(JAVA) -cp $(LIB) GameServer $(name)

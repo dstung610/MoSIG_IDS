@@ -6,7 +6,7 @@ import java.awt.*;
  */
 public class Contents extends JComponent
 {
-    Player[] playerList;
+    PlayerIcon[] playerList;
     Grid grid;
 
     public Contents()
@@ -15,13 +15,13 @@ public class Contents extends JComponent
 
     ;
 
-    public Contents(Grid g, Player[] p)
+    public Contents(Grid g, PlayerIcon[] p)
     {
         this.playerList = p;
         this.grid = g;
     }
 
-    public void setPlayerList(Player[] playerList)
+    public void setPlayerList(PlayerIcon[] playerList)
     {
         this.playerList = playerList;
     }
@@ -57,7 +57,7 @@ public class Contents extends JComponent
                 g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
             }
         }
-        System.out.println("done paint");
+        // System.out.println("done paint");
 
     }
 }

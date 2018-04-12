@@ -5,6 +5,7 @@ public class Node implements Runnable {
     // private Zone zones = new Zone[s_iMaxZonePerNode];//simple case
 
     ConnectorNodes cLeft, cRight;//links to other server left and right;
+    ConnectorNodes cToGUI;
 
     LinkedList<ConnectorNodes> m_lcGameClients;
     LinkedList<String> m_lPlayers;
@@ -33,6 +34,7 @@ public class Node implements Runnable {
 
         Thread threadPullServerMessage = new Thread(this);
         threadPullServerMessage.start();
+        cToGUI = new ConnectorNodes(myName, "GUI");
     }
 
     public String getName() {
@@ -145,6 +147,7 @@ public class Node implements Runnable {
         x = x - (int) m_v2TopLeft.x;
         y = y - (int) m_v2TopLeft.y;
         m_caMiniMap[x * GameUtils.s_SettingZoneSize + y] = '1';
+        cToGUI.send(String.valueOf(m_caMiniMap));
         // GameUtils.LOG(String.valueOf(m_caMiniMap));
     }
 

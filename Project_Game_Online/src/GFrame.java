@@ -9,9 +9,9 @@ import javax.swing.*;
 
 public class GFrame extends JPanel
 {
-    ArrayList<Player> playerArrayList = new ArrayList<>();
-    Player controlPlayer;
-    Player[] playerList;
+    ArrayList<PlayerIcon> playerArrayList = new ArrayList<>();
+    PlayerIcon controlPlayer;
+    PlayerIcon[] playerList;
     Contents contents = new Contents();
     JFrame frame = new JFrame("Playground");
     int frameWidth = 500;
@@ -19,7 +19,7 @@ public class GFrame extends JPanel
     int controlAnchorX = frameWidth / 2;
     int controlAnchorY = frameHeight - 200;
 
-    GFrame(Grid grid, Player[] playerList)
+    GFrame(Grid grid, PlayerIcon[] playerList)
     {
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
@@ -100,7 +100,7 @@ public class GFrame extends JPanel
         }
     };
 
-    public void updatePlayerList(Player[] pl)
+    public void updatePlayerList(PlayerIcon[] pl)
     {
         this.playerList = pl;
         frame.getContentPane().add(new Contents(this.contents.grid, pl));

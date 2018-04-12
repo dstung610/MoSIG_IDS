@@ -50,7 +50,7 @@ public class Sender {
 		try {
 			// String message = "Hello World!";
 			channel.basicPublish("", m_sQueueName, null, message.getBytes("UTF-8"));
-			GameUtils.LOG(m_sQueueName + " [x] Sent '" + message + "'");
+			// GameUtils.LOG(m_sQueueName + " [x] Sent '" + message + "'");
 		} catch (UnsupportedEncodingException uee) {
 			GameUtils.LOG(uee.getMessage());
 		} catch (IOException ie) {

@@ -32,7 +32,7 @@ public class PlayerIcon
         this.posY = posY;
     }
 
-    Player(int posX, int posY)
+    PlayerIcon(int posX, int posY)
     {
         this.posX = posX;
         this.posY = posY;
