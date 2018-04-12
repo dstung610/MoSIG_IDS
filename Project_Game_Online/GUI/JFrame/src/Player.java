@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Created by dosontung on 4/11/18.
  */
@@ -53,6 +55,34 @@ public class Player
     public void moveDown()
     {
         this.setPosY(getPosY() + step);
+
+    }
+
+    public String toString()
+    {
+        return "(X: " + getPosX() + " - Y:" + getPosY() + ")";
+    }
+
+    public void randomRun()
+    {
+        int max = 4, min = 1;
+        int randomDirection = (int) (Math.random() * ((max - min) + 1)) + min;
+
+        switch (randomDirection)
+        {
+            case 1:
+                moveLeft();
+                break;
+            case 2:
+                moveRight();
+                break;
+            case 3:
+                moveUp();
+                break;
+            case 4:
+                moveDown();
+                break;
+        }
 
     }
 

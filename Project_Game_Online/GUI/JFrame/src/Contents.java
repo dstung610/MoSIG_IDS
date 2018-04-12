@@ -6,13 +6,24 @@ import java.awt.*;
  */
 public class Contents extends JComponent
 {
-    Player player;
+    Player[] playerList;
     Grid grid;
 
-    public Contents(Grid g, Player p)
+    public Contents(){};
+    public Contents(Grid g, Player[] p)
     {
-        this.player = p;
+        this.playerList = p;
         this.grid = g;
+    }
+
+    public void setPlayerList(Player[] playerList)
+    {
+        this.playerList = playerList;
+    }
+
+    public void setGrid(Grid grid)
+    {
+        this.grid = grid;
     }
 
     public void paint(Graphics g)
@@ -26,9 +37,11 @@ public class Contents extends JComponent
                 g.drawRect(i * cellSize, j * cellSize, cellSize, cellSize);
             }
         }
-        g.setColor(Color.BLACK);
-        g.fillOval(player.getPosX(), player.getPosY(), 10, 10);
-//        g.setColor(Color.blue);
-//        g.fillOval(player.getPosX(), player.getPosY() + 10, 10, 10);
+        for (int k = 0; k < playerList.length; k++)
+        {
+            g.setColor(Color.BLACK);
+            g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+        }
+
     }
 }

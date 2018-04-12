@@ -11,18 +11,23 @@ public class GFrame extends JPanel
 {
     ArrayList<Player> playerArrayList = new ArrayList<>();
     Player controlPlayer;
+    Player[] playerList;
+    Contents contents = new Contents();
     JFrame frame = new JFrame("Playground");
-    int frameWidth = 1000;
-    int frameHeight = 800;
+    int frameWidth = 500;
+    int frameHeight = 500;
     int controlAnchorX = frameWidth / 2;
     int controlAnchorY = frameHeight - 200;
 
-    GFrame(Grid grid, Player player)
+    GFrame(Grid grid, Player[] playerList)
     {
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 
-        controlPlayer = player;
+        this.playerList = playerList;
+        this.contents.setGrid(grid);
+        this.contents.setPlayerList(playerList);
+        controlPlayer = playerList[0];
         JButton moveButtonLeft = new JButton("Left");
         JButton moveButtonRight = new JButton("Right");
         JButton moveButtonUp = new JButton("Up");
@@ -38,27 +43,14 @@ public class GFrame extends JPanel
         moveButtonUp.addActionListener(moveUp);
         moveButtonDown.addActionListener(moveDown);
 
-        frame.getContentPane().add(moveButtonLeft);
-        frame.getContentPane().add(moveButtonRight);
-        frame.getContentPane().add(moveButtonUp);
-        frame.getContentPane().add(moveButtonDown);
 
-//        JPanel contentArea = new JPanel();
-//        JPanel controlArea = new JPanel();
-//        contentArea.add(new Contents(grid,player));
-//        container.add(contentArea);
-//        container.add(controlArea);
-
-//        String[] playerlist = {"Bird", "Cat", "Dog", "Rabbit", "Pig"};
-//        JComboBox petList = new JComboBox(playerlist);
-//        petList.setSelectedIndex(4);
-//        petList.addActionListener(petList);
-//        frame.getContentPane().add(petList);
-
+//        frame.getContentPane().add(moveButtonLeft);
+//        frame.getContentPane().add(moveButtonRight);
+//        frame.getContentPane().add(moveButtonUp);
+//        frame.getContentPane().add(moveButtonDown);
+//
         /* Adding Panel to Frame */
-        frame.getContentPane().add(new Contents(grid, player));
-//        frame.getContentPane().add(container);
-
+        frame.getContentPane().add(this.contents);
 
         /* Setting Frame */
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,5 +100,21 @@ public class GFrame extends JPanel
         }
     };
 
+    public void updatePlayerList(Player[] pl)
+    {
+        this.playerList = pl;
+        frame.getContentPane().add(new Contents(this.contents.grid, pl));
+        frame.revalidate();
+        frame.repaint();
+        for (int i = 0; i < pl.length; i++) System.out.println(pl[i].toString());
+
+    }
+
+    public void update()
+    {
+        frame.getContentPane().add(new Contents(this.contents.grid, this.playerList));
+        frame.revalidate();
+        frame.repaint();
+    }
 
 }
