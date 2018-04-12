@@ -28,21 +28,21 @@ public class Receiver {
 			channel = connection.createChannel();
 			channel.queueDeclare(m_sQueueName, false, false, false, null);
 
-			// System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+			// GameUtils.LOG(" [*] Waiting for messages. To exit press CTRL+C");
 			Consumer consumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 						throws IOException {
 					String message = new String(body, "UTF-8");
-					System.out.println(queueName + " [x] Received '" + message + "'");
+					// GameUtils.LOG(queueName + " [x] Received '" + message + "'");
 					sBuffer.add(message);
 				}
 			};
 			channel.basicConsume(m_sQueueName, true, consumer);
 		} catch (IOException ie) {
-			System.out.println(ie.getMessage());
+			GameUtils.LOG(ie.getMessage());
 		} catch (TimeoutException te) {
-			System.out.println(te.getMessage());
+			GameUtils.LOG(te.getMessage());
 		}
 
 	}

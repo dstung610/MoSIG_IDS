@@ -16,12 +16,42 @@ public class GameUtils {
 	static String GenerateLoginMsg(String sPlayerName)
     {
 		//"login request from player ABC"
-        return "lr_" + sPlayerName + "+";
+        return "lOGINreqESt:" + sPlayerName;
 	}
 	
 	static String GeneratePlayerSaveFile(String sPlayerName)
     {
 		//"login request from player ABC"
         return "DB_" + sPlayerName + ".sav";
+	}
+	
+
+	static void LOG(String msg)
+	{
+		System.out.println(msg);
+	}
+
+	static String packPlayerForwardMsg(String sNodeName, String sPlayerName, float x, float y)
+	{
+		return "ALLNODES*" + sNodeName + "|FoRwArD-" + sPlayerName + ":" + x + " " + y;
+	}
+	static String packPlayerInfo(String sPlayerName, float x, float y)
+	{
+		return "PLAYERINFO*"+ sPlayerName + ":" + x + " " + y;
+	}
+
+	static Player unpackPlayerInfo(String msg)
+	{
+        msgs = msg.split("-");
+        String task = msgs[0];
+        msg = msgs[1];
+        if (task.compareTo("CruRentPOs") == 0) {
+            msgs = msg.split(":");
+            String sPlayerName = msgs[0];
+            msg = msgs[1];
+            msgs = msg.split(" ");
+            float x = Float.parseFloat(sPos[0]);
+            float y = Float.parseFloat(sPos[1]);
+
 	}
 }

@@ -3,6 +3,7 @@ import java.util.LinkedList;
 class ConnectorClientServer {
     SenderBroadcast out;
     ReceiverOpened in;
+    Receiver inPrivate;
     LinkedList<String> sBuffer;
 
     public ConnectorClientServer(String sPlayerName)
@@ -20,8 +21,24 @@ class ConnectorClientServer {
         return sBuffer.pollFirst();
     }
 
+    public void openPrivateChanelToServer(String sChanelName)
+    {
+        inPrivate = new Receiver(GameUtils.host, sChanelName, sBuffer); 
+    }
+
+    public void closePrivateChanelToServer()
+    {
+        if (inPrivate != null)
+            inPrivate.close();
+    }
+
+
     public void close() {
         out.close();
         in.close();
+        if (inPrivate != null)
+            inPrivate.close();
     }
+
+
 }
