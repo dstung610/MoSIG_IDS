@@ -9,7 +9,12 @@ public class Contents extends JComponent
     Player[] playerList;
     Grid grid;
 
-    public Contents(){};
+    public Contents()
+    {
+    }
+
+    ;
+
     public Contents(Grid g, Player[] p)
     {
         this.playerList = p;
@@ -30,6 +35,7 @@ public class Contents extends JComponent
     {
         int size = this.grid.size;
         int cellSize = this.grid.cellSize;
+        g.setColor(Color.lightGray);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -37,11 +43,21 @@ public class Contents extends JComponent
                 g.drawRect(i * cellSize, j * cellSize, cellSize, cellSize);
             }
         }
+
         for (int k = 0; k < playerList.length; k++)
         {
-            g.setColor(Color.BLACK);
-            g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+            if (playerList[k].speak)
+            {
+                g.setColor(Color.RED);
+                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+                playerList[k].speak = false;
+            } else
+            {
+                g.setColor(Color.BLACK);
+                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+            }
         }
+        System.out.println("done paint");
 
     }
 }

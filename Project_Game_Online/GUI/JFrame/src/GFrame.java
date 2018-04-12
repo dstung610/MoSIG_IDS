@@ -112,7 +112,6 @@ public class GFrame extends JPanel
 
     public void update()
     {
-        frame.getContentPane().add(new Contents(this.contents.grid, this.playerList));
         frame.revalidate();
         frame.repaint();
     }

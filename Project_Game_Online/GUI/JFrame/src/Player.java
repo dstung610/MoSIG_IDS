@@ -9,6 +9,8 @@ public class Player
     private int posX = 0;
     private int posY = 0;
     private int step = 10;
+    int color = 0;
+    boolean speak = false;
 
     public int getPosX()
     {
@@ -60,7 +62,7 @@ public class Player
 
     public String toString()
     {
-        return "(X: " + getPosX() + " - Y:" + getPosY() + ")";
+        return "(X: " + getPosX() + " - Y:" + getPosY() + " - color:" + color + " - speak:" + speak + ")";
     }
 
     public void randomRun()
