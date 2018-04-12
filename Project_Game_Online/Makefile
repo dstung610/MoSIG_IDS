@@ -27,3 +27,6 @@ runClient:
 	$(JAVA) -cp $(LIB) GameClient $(name)
 runGUI:
 	$(JAVA) -cp $(LIB) GUI $(node)
+
+jar:
+	cd src;jar cvfe GameOnline.jar *.class;cp -i GameOnline.jar ../bin/
