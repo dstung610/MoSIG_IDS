@@ -6,6 +6,7 @@ public class Grid
 {
     int size = 0;
     int cellSize = 10;
+    String[] map;
 
     Grid(int size)
     {

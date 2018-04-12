@@ -8,6 +8,7 @@ public class Contents extends JComponent
 {
     PlayerIcon[] playerList;
     Grid grid;
+    String[] map;
 
     public Contents()
     {
@@ -19,6 +20,7 @@ public class Contents extends JComponent
     {
         this.playerList = p;
         this.grid = g;
+        this.map = g.map;
     }
 
     public void setPlayerList(PlayerIcon[] playerList)
@@ -44,20 +46,33 @@ public class Contents extends JComponent
             }
         }
 
-        for (int k = 0; k < playerList.length; k++)
+        if (this.map.length > 0)
         {
-            if (playerList[k].speak)
+            for (int k = 0; k < this.map.length; k++)
             {
-                g.setColor(Color.RED);
-                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
-                playerList[k].speak = false;
-            } else
-            {
-                g.setColor(Color.BLACK);
-                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+                if (this.map[k].equals("1"))
+                {
+                    g.setColor(Color.BLACK);
+                    g.fillOval((k % this.grid.size) * cellSize, (k / this.grid.size) * cellSize, 10, 10);
+                }
             }
         }
         // System.out.println("done paint");
+//            if (playerList[k].speak)
+//            {
+//                g.setColor(Color.RED);
+//                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+//                playerList[k].speak = false;
+//            } else
+//            {
+//                g.setColor(Color.BLACK);
+//                g.fillOval(playerList[k].getPosX(), playerList[k].getPosY(), 10, 10);
+//            }
 
+    }
+
+    public void update()
+    {
+        this.map = this.grid.map;
     }
 }

@@ -112,6 +112,7 @@ public class GFrame extends JPanel
 
     public void update()
     {
+        contents.update();
         frame.revalidate();
         frame.repaint();
     }
