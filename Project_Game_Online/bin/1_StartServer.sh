@@ -1,0 +1,1 @@
+java -cp GameOnline.jar:* GameServer SERVER_TEST

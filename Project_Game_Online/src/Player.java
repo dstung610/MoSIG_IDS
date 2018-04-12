@@ -21,6 +21,7 @@ class Player {
             m_v2Position.x += m_v2Speed.x;
             m_v2Position.y += m_v2Speed.y;
         }
+        
     }
 
     public void chooseARandomTarget()
